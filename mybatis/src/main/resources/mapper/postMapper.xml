@@ -43,4 +43,81 @@
         WHERE ID = #{id}
     </update>
 
+    <select id="selectTotalPostCountAndTotalPageCount" parameterType="int" resultType="PostCountDTO">
+        SELECT
+            (
+                SELECT COUNT(ID)
+                FROM TBL_POST
+            ) TOTAL_POST_COUNT,
+            (
+                SELECT COUNT(ID) / #{limit}
+                FROM TBL_POST
+            ) TOTAL_PAGE_COUNT
+        FROM DUAL
+    </select>
+
+
+    <select id="selectNewTotalPostCountAndTotalPageCount" parameterType="Map" resultType="PostCountDTO">
+        SELECT
+            COUNT(*) TOTAL_POST_COUNT,
+            COUNT(*) / #{limit} TOTAL_PAGE_COUNT
+        FROM (
+            SELECT TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.POST_READ_COUNT, TBP.MEMBER_ID,
+            TBM.MEMBER_EMAIL, TBM.MEMBER_NAME
+            FROM TBL_POST TBP
+            JOIN TBL_MEMBER TBM
+            ON TBP.MEMBER_ID = TBM.ID
+            <if test="!keyword.isEmpty">
+                WHERE POST_TITLE LIKE #{keyword}
+            </if>
+            OR POST_CONTENT LIKE #{keyword}
+            ORDER BY
+            <choose>
+                <when test="order.equals('popular').toString()">
+                    POST_READ_COUNT DESC
+                </when>
+                <otherwise>
+                    ID DESC
+                </otherwise>
+            </choose>
+            OFFSET (#{cursor} - 1) * #{limit} ROWS
+            FETCH FIRST #{limit} ROWS ONLY
+        )
+    </select>
+
+    <select id="selectByKeyword" parameterType="String" resultType="PostDTO">
+        SELECT TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.POST_READ_COUNT, TBP.MEMBER_ID,
+               TBM.MEMBER_EMAIL, TBM.MEMBER_NAME
+        FROM TBL_POST TBP
+         JOIN TBL_MEMBER TBM
+              ON TBP.MEMBER_ID = TBM.ID
+        <if test="!keyword.isEmpty">
+            WHERE POST_TITLE LIKE #{keyword}
+            OR POST_CONTENT LIKE #{keyword}
+        </if>
+    </select>
+
+
+    <select id="selectAllWithOrder" parameterType="Map" resultType="PostDTO">
+        SELECT TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.POST_READ_COUNT, TBP.MEMBER_ID,
+               TBM.MEMBER_EMAIL, TBM.MEMBER_NAME
+        FROM TBL_POST TBP
+        JOIN TBL_MEMBER TBM
+                ON TBP.MEMBER_ID = TBM.ID
+        <if test="!keyword.isEmpty">
+            WHERE POST_TITLE LIKE #{keyword}
+            OR POST_CONTENT LIKE #{keyword}
+        </if>
+        ORDER BY
+        <choose>
+            <when test="order.equals('popular').toString()">
+                POST_READ_COUNT DESC
+            </when>
+            <otherwise>
+                ID DESC
+            </otherwise>
+        </choose>
+        OFFSET (#{cursor} - 1) * #{limit} ROWS
+        FETCH FIRST #{limit} ROWS ONLY
+    </select>
 </mapper>

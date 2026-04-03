@@ -13,4 +13,5 @@ public interface MemberMapper {
     public void insert(MemberVO memberVO);
     public void update(MemberVO memberVO);
     public void delete(Long id);
+
 }

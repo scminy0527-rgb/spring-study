@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.mybatis.mapper.PostLikeMapper">
+
+    <!-- 좋아요 등록 -->
+    <insert id="insert" parameterType="PostLikeVO">
+        INSERT INTO TBL_POST_LIKE
+        VALUES (SEQ_POST_LIKE.NEXTVAL, #{memberId}, #{postId})
+    </insert>
+
+    <!-- 좋아요 취소 -->
+    <delete id="delete" parameterType="PostLikeVO">
+        DELETE FROM TBL_POST_LIKE
+        WHERE POST_ID = #{postId} AND MEMBER_ID = #{memberId}
+    </delete>
+
+    <!-- 전체 게시글 목록 + 현재 회원의 좋아요 여부 (IS_LIKED) -->
+    <select id="selectAll" parameterType="Long" resultType="PostDTO">
+        SELECT
+            TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.MEMBER_ID, TBP.POST_READ_COUNT,
+            TBM.MEMBER_EMAIL, TBM.MEMBER_NAME,
+            (
+                SELECT COUNT(*)
+                FROM TBL_POST_LIKE
+                WHERE POST_ID = TBP.ID
+            ) POST_LIKE_COUNT,
+            CASE
+                WHEN TBL.ID IS NULL THEN 0 ELSE 1
+            END IS_LIKED
+        FROM TBL_POST TBP
+                 JOIN TBL_MEMBER TBM
+                      ON TBP.MEMBER_ID = TBM.ID
+                 LEFT JOIN TBL_POST_LIKE TBL
+                           ON TBP.ID = TBL.POST_ID AND TBL.MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 키워드 검색 + 현재 회원의 좋아요 여부 (IS_LIKED) -->
+    <select id="selectAllWithKeyword" parameterType="Map" resultType="PostDTO">
+        SELECT
+            TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.POST_READ_COUNT, TBP.MEMBER_ID,
+            TBM.MEMBER_EMAIL, TBM.MEMBER_NAME,
+            (
+                SELECT COUNT(*)
+                FROM TBL_POST_LIKE
+                WHERE POST_ID = TBP.ID
+            ) POST_LIKE_COUNT,
+            CASE
+                WHEN TBL.ID IS NULL THEN 0 ELSE 1
+            END IS_LIKED
+        FROM TBL_POST TBP
+                 JOIN TBL_MEMBER TBM
+                      ON TBP.MEMBER_ID = TBM.ID
+                 LEFT JOIN TBL_POST_LIKE TBL
+                           ON TBP.ID = TBL.POST_ID AND TBL.MEMBER_ID = #{memberId}
+        WHERE POST_TITLE LIKE '%' || #{keyword} || '%'
+           OR POST_CONTENT LIKE '%' || #{keyword} || '%'
+    </select>
+
+    <!-- 단건 게시글 조회 + 좋아요 수 + 현재 회원의 좋아요 여부 (IS_CLICK) -->
+    <select id="selectByIdAndPostLike" parameterType="Map" resultType="PostDTO">
+        SELECT
+            TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.POST_READ_COUNT, TBP.MEMBER_ID,
+            (
+                SELECT COUNT(*)
+                FROM TBL_POST_LIKE
+                WHERE POST_ID = #{postId}
+            ) POST_LIKE_COUNT,
+            (
+                SELECT COUNT(*)
+                FROM TBL_POST_LIKE
+                WHERE POST_ID = #{postId}
+                  AND MEMBER_ID = #{memberId}
+            ) IS_CLICK
+        FROM TBL_POST TBP
+        WHERE TBP.ID = #{postId}
+    </select>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_POST_LIKE
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>

@@ -12,4 +12,8 @@ public class PostDTO {
     private Long postReadCount;
     private String memberName;
     private String memberEmail;
+    private Long memberId;
+    private Long postLikeCount;
+    private Long isClick;
+    private boolean isLiked;
 }

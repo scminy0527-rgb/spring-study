@@ -10,8 +10,11 @@
         <!--VO alias 붙이기-->
         <typeAlias type="com.app.mybatis.domain.vo.MemberVO" alias="MemberVO"/>
         <typeAlias type="com.app.mybatis.domain.vo.PostVO" alias="PostVO"/>
+        <typeAlias type="com.app.mybatis.domain.vo.PostLikeVO" alias="PostLikeVO"/>
 
         <!--DTO alias-->
         <typeAlias type="com.app.mybatis.domain.dto.PostDTO" alias="PostDTO"/>
+        <typeAlias type="com.app.mybatis.domain.dto.PostCountDTO" alias="PostCountDTO"/>
+        <typeAlias type="com.app.mybatis.domain.dto.PostResponseDTO" alias="PostResponse"/>
     </typeAliases>
 </configuration>

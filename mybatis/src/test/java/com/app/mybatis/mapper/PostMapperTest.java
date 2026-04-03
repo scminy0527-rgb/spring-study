@@ -1,6 +1,9 @@
 package com.app.mybatis.mapper;
 
+import com.app.mybatis.domain.dto.PostCountDTO;
 import com.app.mybatis.domain.dto.PostDTO;
+import com.app.mybatis.domain.dto.PostResponseDTO;
+import com.app.mybatis.domain.vo.PostLikeVO;
 import com.app.mybatis.domain.vo.PostVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -8,12 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
 @SpringBootTest
 @Slf4j
 public class PostMapperTest {
 
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private PostLikeMapper postLikeMapper;
 
     @Test
     public void insertTest(){
@@ -23,6 +33,27 @@ public class PostMapperTest {
         postVO.setMemberId(24L);
 
         postMapper.insert(postVO);
+    }
+
+    @Test
+    public void newInsertTest(){
+        for(int i = 0; i < 50; i++){
+            PostVO postVO = new PostVO();
+            postVO.setPostTitle("테스트 게시글" + (i + 1));
+            postVO.setPostContent("테스트 내용" + (i + 1));
+            postVO.setMemberId(1L);
+            postMapper.insert(postVO);
+        }
+    }
+
+    @Test
+    public void newUpdateReadCountTest(){
+        Random random = new Random();
+        random.nextInt(50);
+        for(int i = 0; i < 5000; i++){
+            Long id = Long.valueOf(random.nextInt(50));
+            postMapper.updatePostReadCount(id);
+        }
     }
 
     @Test
@@ -62,5 +93,136 @@ public class PostMapperTest {
     @Test
     public void updateReadCountTest(){
         postMapper.updatePostReadCount(2L);
+    }
+
+
+    @Test
+    public void selectAllWithOrderTest(){
+        String order = "";
+        HashMap<String,Object> orders = new HashMap<>();
+        orders.put("order","popular");
+        orders.put("cursor",1);
+        orders.put("limit",5);
+        postMapper.selectAllWithOrder(orders)
+                .stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
+    }
+
+    @Test
+    public void selectTotalPostCountAndTotalPageCount(){
+        int limit = 5;
+        log.info("DTO 정보: {}", postMapper.selectTotalPostCountAndTotalPageCount(limit).toString());
+    }
+
+//    게시판 목록 조회
+    @Test
+    public void seeTotal(){
+        String order = "popular";
+        int limit = 5;
+        HashMap<String,Object> orders = new HashMap<>();
+        orders.put("order", order);
+        orders.put("cursor",1);
+        orders.put("limit",5);
+        postMapper.selectAllWithOrder(orders)
+                .stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
+
+        List<PostDTO> posts = postMapper.selectAllWithOrder(orders);
+        PostCountDTO  postCountDTO = postMapper.selectTotalPostCountAndTotalPageCount(limit);
+        PostResponseDTO postResponseDTO = new PostResponseDTO();
+
+        postResponseDTO.setTotalPostCount(postCountDTO.getTotalPostCount());
+        postResponseDTO.setTotalPageCount(postCountDTO.getTotalPageCount());
+        postResponseDTO.setPosts(posts);
+
+        log.info("postResponseDTO 결과: {}",postResponseDTO.toString());
+    }
+
+    @Test
+    public void keywordTest(){
+        HashMap<String,Object> orders = new HashMap<>();
+        String keyword = "4", finalKeyword = "";
+        if (!keyword.isEmpty()){
+            finalKeyword = '%' + keyword + '%';
+//            혹은 sql 에서 % || keyword || % 방식으로도 가능
+        }
+
+        orders.put("order","popular");
+        orders.put("cursor",1);
+        orders.put("limit",50);
+        orders.put("keyword", finalKeyword);
+
+        PostCountDTO postCountDTO = postMapper.selectNewTotalPostCountAndTotalPageCount(orders);
+        List<PostDTO> posts = postMapper.selectAllWithOrder(orders);
+
+        log.info("{}", postCountDTO.toString());
+        posts.stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
+    }
+
+
+    @Test
+    public void postLikeTest(){
+        PostLikeVO postLikeVO = new PostLikeVO();
+
+//        1 ~ 50 까지 글
+        for(int i = 0; i < 50; i++){
+            Random random = new Random();
+            int randomNum = random.nextInt(1, 51);
+            postLikeVO.setPostId(Long.valueOf(randomNum));
+
+            randomNum = random.nextInt(1, 4);
+            postLikeVO.setMemberId(Long.valueOf(randomNum));
+            postLikeMapper.insert(postLikeVO);
+        }
+    }
+
+//    전체 게시글 목록 + 현재 회원(memberId=1)의 좋아요 여부 확인
+    @Test
+    public void postLikeSelectAllTest(){
+        Long memberId = 1L;
+        postLikeMapper.selectAll(memberId)
+                .stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
+    }
+
+//    단건 게시글 조회 + 좋아요 수 + 현재 회원의 좋아요 여부 (IS_CLICK)
+    @Test
+    public void postLikeSelectByIdTest(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("postId", 1L);
+        params.put("memberId", 1L);
+
+        postLikeMapper.selectByIdAndPostLike(params)
+                .map(PostDTO::toString)
+                .ifPresent(log::info);
+    }
+
+//    키워드 검색 + 현재 회원의 좋아요 여부 확인
+    @Test
+    public void postLikeSelectWithKeywordTest(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("keyword", "테스트");
+        params.put("memberId", 1L);
+
+        postLikeMapper.selectAllWithKeyword(params)
+                .stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
+    }
+
+//    좋아요 취소 테스트
+    @Test
+    public void postUnlikeTest(){
+        PostLikeVO postLikeVO = new PostLikeVO();
+        postLikeVO.setPostId(1L);
+        postLikeVO.setMemberId(1L);
+
+        postLikeMapper.delete(postLikeVO);
+        log.info("좋아요 취소 완료 - postId: {}, memberId: {}", postLikeVO.getPostId(), postLikeVO.getMemberId());
     }
 }
