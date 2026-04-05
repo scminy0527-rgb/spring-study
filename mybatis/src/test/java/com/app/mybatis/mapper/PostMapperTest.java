@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 @Slf4j
@@ -178,6 +178,37 @@ public class PostMapperTest {
             postLikeVO.setMemberId(Long.valueOf(randomNum));
             postLikeMapper.insert(postLikeVO);
         }
+    }
+
+//    랜덤하게 포스트 좋아요 를 넣기 위한거
+    @Test
+    public void randomPostLikeTest(){
+        Random random = new Random();
+
+        List<Integer> randomList = IntStream.rangeClosed(1, 50)
+                .boxed()                          // int → Integer 박싱
+                .collect(Collectors.toList());
+
+        Collections.shuffle(randomList);
+
+        for(int i = 0; i < 3; i++){
+            int randomCount = random.nextInt(1, 51);
+            for(int j = 0; j < randomCount; j++){
+                PostLikeVO postLikeVO = new PostLikeVO();
+                postLikeVO.setPostId(Long.valueOf(randomList.get(j)));
+                postLikeVO.setMemberId(Long.valueOf(i + 1));
+                postLikeMapper.insert(postLikeVO);
+            }
+        }
+    }
+
+
+//  모든 게시글
+    @Test
+    public void selectTestAllPostWithLikeClick(){
+        postLikeMapper.selectAllAndIsClick(null).stream()
+                .map(PostDTO::toString)
+                .forEach(log::info);
     }
 
 //    전체 게시글 목록 + 현재 회원(memberId=1)의 좋아요 여부 확인

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class PostDTO {
+//    해당 부분은 간단한 조인으로 가능
     private Long id;
     private String postTitle;
     private String postContent;
@@ -13,7 +14,8 @@ public class PostDTO {
     private String memberName;
     private String memberEmail;
     private Long memberId;
+
+//    여기서 부터는 서브쿼리
     private Long postLikeCount;
-    private Long isClick;
-    private boolean isLiked;
+    private boolean isClick;
 }

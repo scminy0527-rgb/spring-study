@@ -75,9 +75,22 @@
         WHERE TBP.ID = #{postId}
     </select>
 
-    <delete id="delete" parameterType="Long">
-        DELETE FROM TBL_POST_LIKE
-        WHERE ID = #{id}
-    </delete>
-
+    <select id="selectAllAndIsClick" parameterType="Long" resultType="postDTO">
+        SELECT TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.MEMBER_ID,
+               TBM.MEMBER_EMAIL, TBM.MEMBER_NAME, COUNT(TPL.ID) AS POST_LIKE_COUNT,
+               <choose>
+                   <when test="_parameter != null">
+                       MAX(CASE WHEN TPL.MEMBER_ID = #{memberId} THEN 1 ELSE 0 END) IS_CLICK
+                   </when>
+                   <otherwise>
+                       0 IS_CLICK
+                   </otherwise>
+               </choose>
+        FROM TBL_POST TBP
+                 JOIN TBL_MEMBER TBM ON TBP.MEMBER_ID = TBM.ID
+                 LEFT JOIN TBL_POST_LIKE TPL ON TBP.ID = TPL.POST_ID
+        GROUP BY TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.MEMBER_ID,
+                 TBM.MEMBER_EMAIL, TBM.MEMBER_NAME
+        ORDER BY TBP.ID DESC
+    </select>
 </mapper>
