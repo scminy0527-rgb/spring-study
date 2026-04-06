@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>이름 출력</h1>
+    <div th:each="name : ${names}" >
+        <span>이름</span>
+        <span th:text="${name}"></span>
+    </div>
+
+    <h2>테이블 응용</h2>
+    <table border="1">
+        <tr>
+            <th>이름</th>
+        </tr>
+        <tr th:each="name : ${names}" >
+            <td th:text="${name}"></td>
+        </tr>
+    </table>
+</body>
+</html>
