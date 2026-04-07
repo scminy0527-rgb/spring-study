@@ -8,6 +8,10 @@
 
     <typeAliases>
         <!--VO alias 붙이기-->
-        <!--<typeAlias type="com.app.mybatis.domain.vo.MemberVO" alias="MemberVO"/>-->
+        <typeAlias type="com.app.controller.domain.vo.MemberVO" alias="MemberVO"/>
+        <typeAlias type="com.app.controller.domain.vo.PostVO" alias="PostVO"/>
+
+        <!--DTO alias-->
+        <typeAlias type="com.app.controller.domain.dto.PostDTO" alias="PostDTO"/>
     </typeAliases>
 </configuration>

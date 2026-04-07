@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form th:action="@{/members/login}" method="post" th:object="${memberVO}">
+        <input type="text" th:field="*{memberEmail}" placeholder="이메일">
+        <input type="password" th:field="*{memberPassword}" placeholder="비밀번호">
+        <button type="button">로그인</button>
+    </form>
+</body>
+<script th:inline="javascript">
+    const isLogin = [[${isLogin}]];
+    console.log(isLogin);
+    if(isLogin != null){
+        alert("아이디 또는 비밀번호를 확인하세요")
+    }
+
+    // const errorType = {
+    //     "memberEmail" : "이메일 주소가 존재하지 않습니다.",
+    //     "memberPassword" : "잘못된 비밀번호 입니다."
+    // }
+    // const flag = new URLSearchParams(location.search).get("flag");
+    // // if(flag) alert(flag + " 오류입니다.");
+    // if(flag) alert(errorType[flag]);
+
+    const inputs = document.querySelectorAll("input");
+    const button = document.querySelector("button");
+    const form = document.querySelector("form");
+
+
+    button.addEventListener("click", () => {
+        for(let input of inputs){
+            if(!input.value) return alert(input.name + "값이 없습니다.");
+        }
+        form.submit();
+    });
+</script>
+</html>

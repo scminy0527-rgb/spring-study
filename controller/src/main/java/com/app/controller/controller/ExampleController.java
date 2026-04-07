@@ -1,5 +1,6 @@
 package com.app.controller.controller;
 
+import com.app.controller.domain.vo.MemberVO;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.thymeleaf.expression.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
+//컨트롤러는 하나의 엔드포인트
 @Slf4j
 @Controller
 @RequestMapping("/ex/*")
@@ -71,5 +73,26 @@ public class ExampleController {
     @GetMapping("ex05")
     public  String ex05(@ModelAttribute("name") String name, @ModelAttribute("hobby") String hobby) {
         return "ex05";
+    }
+
+    @GetMapping("ex06")
+    public String goToEx06() {
+        return "ex06";
+    }
+
+    @PostMapping("ex06")
+    public String ex06(MemberVO memberVO) {
+        log.info("응답이 들어옴");
+        log.info("MemberVO: {}", memberVO);
+        String memberName = memberVO.getMemberName();
+//        return "redirect:/ex/ex06-complete?memberName=" + memberName;
+        return "redirect:/ex/ex06-complete";
+    }
+
+    @GetMapping("ex06-complete")
+    public String goToEx06Complete(
+//            @ModelAttribute("memberName")  String memberName
+    ) {
+        return "ex06-complete";
     }
 }

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>마이페이지</title>
+</head>
+<body>
+<!-- 바로 출력 -->
+<!--
+    이메일:
+    이름:
+-->
+<div th:object="${session.member}">
+    <h1 id="memberEmail" th:text="*{memberEmail}"></h1>
+    <h1 id="memberName" th:text="*{memberName}"></h1>
+</div>
+
+<button onclick="location.href='/members/update'">회원 수정</button>
+<!--<button onclick="location.href='/members/delete'">회원 탈퇴</button>-->
+
+<button id="delete">회원 탈퇴</button>
+<!--<form th:action="@{/members/delete}" method="post">-->
+<!--</form>-->
+
+</body>
+<script th:inline="javascript">
+    // const member = [[${session.member}]];
+    // const memberEmailH1 = document.getElementById("memberEmail");
+    // const memberNameH1 = document.getElementById("memberName");
+    //
+    // memberEmailH1.innerText = member.memberEmail;
+    // memberNameH1.innerText = member.memberName;
+
+    const deleteButton = document.getElementById("delete");
+    deleteButton.addEventListener("click", () => {
+        fetch("/members/delete", { method: "POST" })
+            .then(() => location.href = "/members/login");
+    });
+
+</script>
+</html>

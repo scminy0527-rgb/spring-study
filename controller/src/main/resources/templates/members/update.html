@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원정보 수정</title>
+</head>
+<body>
+    <form th:action="@{/members/update}" method="post" th:object="${memberVO}">
+        <input type="hidden" th:field="*{id}">
+        <input type="text" th:field="*{memberEmail}" placeholder="이메일">
+        <input type="text" th:field="*{memberName}" placeholder="이름">
+        <button type="button">회원 수정</button>
+    </form>
+</body>
+<script th:inline="javascript">
+    // 이메일 중복 여부
+    const isUpdate = [[${isUpdate}]];
+    if(isUpdate != null){
+        alert("이메일이 중복되었습니다.")
+    }
+
+    const inputs = document.querySelectorAll("input");
+    const button = document.querySelector("button");
+    const form = document.querySelector("form");
+
+    button.addEventListener("click", () => {
+        for(let input of inputs){
+            if(!input.value) return alert(input.name + "값이 없습니다.");
+        }
+        form.submit();
+    });
+</script>
+</html>
