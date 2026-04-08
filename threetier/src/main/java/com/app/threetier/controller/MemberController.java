@@ -2,6 +2,7 @@ package com.app.threetier.controller;
 
 import com.app.threetier.domain.vo.MemberVO;
 import com.app.threetier.mapper.MemberMapper;
+import com.app.threetier.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class MemberController {
 //    해당 인터페이스를 사용 하려면 의존성 주입을 받아야 하지만 필두 주입을 받으면 안됨
 //    따라서 생성자를 통해서 주입 받는 식으로 해야 하고 @RequiredArgs~~ 를 이용 (아니면 @Data 도 가능은 함)
     private final MemberMapper memberMapper;
+    private final MemberServiceImpl memberService;
     private final HttpSession session;
 
     //    회원가입
@@ -30,7 +32,7 @@ public class MemberController {
 //    값을 받아서 db 에 저장
     @PostMapping("join")
     public RedirectView join(MemberVO memberVO) {
-        memberMapper.insert(memberVO);
+        memberService.joinMember(memberVO);
         return new RedirectView("/members/login");
     }
 
@@ -43,27 +45,8 @@ public class MemberController {
     public RedirectView login(MemberVO memberVO, RedirectAttributes redirectAttributes) {
         String memberEmail = memberVO.getMemberEmail();
 //        로그인 관련 로직 실행
-        if(memberMapper.existByMemberEmail(memberEmail) == 0){
-//        리다이렉트와 세션(session)을 통해 화면에 상태를 관리하면
-//        session 과부화되므로 session에 flash 영역에 주입이 되며 새로운 요청이 들어왔을 때
-//        flash 영역은 사라지게 된다. 즉 new Request() 객체를 만나면 사라진다.
-//        redirectAttributes.addFlashAttribute("key", value): 컨트롤러에서 사용이 가능
-//        redirectAttributes.addAttribute("isLogin", true): 컨트롤러에서 사용이 불가능
-
-            redirectAttributes.addFlashAttribute("isLogin", false);
-            return  new RedirectView("/members/login");
-        }
-
-        Optional<MemberVO> foundMember = memberMapper.selectByMemberEmailAndMemberPassword(memberVO);
-        if(!foundMember.isPresent()){
-            redirectAttributes.addFlashAttribute("isLogin", false);
-            return  new RedirectView("/members/login");
-        }
-
-        MemberVO member = foundMember.get();
+        MemberVO member = memberService.loginMember(memberVO);
         session.setAttribute("member", member);
-
-//        redirectAttributes.addFlashAttribute("isLogin", true);
         return new RedirectView("/members/my-page");
     }
 
