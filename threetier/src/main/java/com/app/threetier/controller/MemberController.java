@@ -1,9 +1,8 @@
-package com.app.controller.controller;
+package com.app.threetier.controller;
 
-import com.app.controller.domain.vo.MemberVO;
-import com.app.controller.mapper.MemberMapper;
+import com.app.threetier.domain.vo.MemberVO;
+import com.app.threetier.mapper.MemberMapper;
 import jakarta.servlet.http.HttpSession;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

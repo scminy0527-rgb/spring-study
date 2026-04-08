@@ -1,4 +1,4 @@
-package com.app.controller.domain.dto;
+package com.app.threetier.domain.dto;
 
 //SELECT TBP.ID, TBP.POST_TITLE, TBP.POST_CONTENT, TBP.MEMBER_ID, TBP.POST_READ_COUNT,
 //TBM.MEMBER_NAME, TBM.MEMBER_EMAIL

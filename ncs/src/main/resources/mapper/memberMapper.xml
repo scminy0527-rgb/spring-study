@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.ncs.mapper.MemberMapper">
+    <insert id="join" parameterType="MemberVO">
+        INSERT INTO TBL_MEMBER
+        VALUES (SEQ_MEMBER.NEXTVAL, #{memberEmail}, #{memberPassword}, #{memberName})
+    </insert>
+
+    <select id="selectOneByMemberEmailAndMemberPassword" parameterType="MemberVO" resultType="MemberVO">
+        SELECT ID, MEMBER_EMAIL, MEMBER_NAME
+        FROM TBL_MEMBER
+        WHERE MEMBER_EMAIL = #{memberEmail}
+          AND MEMBER_PASSWORD = #{memberPassword}
+    </select>
+
+    <update id="update" parameterType="MemberVO">
+        UPDATE TBL_MEMBER
+        SET MEMBER_NAME = #{memberName}, MEMBER_EMAIL = #{memberEmail}, MEMBER_PASSWORD = #{memberPassword}
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_MEMBER
+        WHERE ID = #{id}
+    </delete>
+</mapper>

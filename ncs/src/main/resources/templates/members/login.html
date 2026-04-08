@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>로그인 페이지</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/members/login}" method="post" th:object="${memberVO}">
+    <input type="text" th:field="*{memberEmail}" placeholder="이메일을 입력하세요">
+    <input type="password" th:field="*{memberPassword}" placeholder="비밀번호를 입력하세요">
+    <button>로그인</button>
+</form>
+</body>
+<script th:inline="javascript">
+    const isLogin = [[${isLogin}]]
+    if(isLogin != null){
+        alert("로그인 실패")
+    }
+
+</script>
+</html>

@@ -1,6 +1,6 @@
-package com.app.controller.mapper;
+package com.app.threetier.mapper;
 
-import com.app.controller.domain.vo.MemberVO;
+import com.app.threetier.domain.vo.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;

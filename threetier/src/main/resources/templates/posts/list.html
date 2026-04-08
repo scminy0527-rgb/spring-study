@@ -30,7 +30,9 @@
             <th:block th:each="post : ${posts}">
                 <tr th:object="${post}">
                     <td th:text="*{id}"></td>
-                    <td th:text="*{postTitle}"></td>
+                    <td>
+                        <a th:href="@{/posts/read(id=*{id})}" th:text="*{postTitle}"></a>
+                    </td>
                     <td th:text="*{postReadCount}"></td>
                     <td th:text="*{memberName}"></td>
                 </tr>
