@@ -10,6 +10,9 @@
         <!--VO alias 붙이기-->
         <typeAlias type="com.app.threetier.domain.vo.MemberVO" alias="MemberVO"/>
         <typeAlias type="com.app.threetier.domain.vo.PostVO" alias="PostVO"/>
+        <typeAlias type="com.app.threetier.domain.vo.ProductVO" alias="ProductVO"/>
+        <typeAlias type="com.app.threetier.domain.vo.WorkVO" alias="WorkVO"/>
+        <typeAlias type="com.app.threetier.domain.vo.StudentVO" alias="StudentVO"/>
 
         <!--DTO alias-->
         <typeAlias type="com.app.threetier.domain.dto.PostDTO" alias="PostDTO"/>

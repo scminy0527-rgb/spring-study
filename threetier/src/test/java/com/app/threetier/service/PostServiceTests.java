@@ -29,6 +29,11 @@ public class PostServiceTests {
     }
 
     @Test
+    void increaseReadCountTest() {
+        postService.increaseReadCount(50L);
+    }
+
+    @Test
     void deletePostTest() {
         postService.deletePost(45L);
     }

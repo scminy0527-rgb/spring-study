@@ -28,13 +28,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPost(Long id) {
-        return postDAO.findById(id).orElseThrow(
+        this.increaseReadCount(id);
+        PostDTO postDTO = postDAO.findById(id).orElseThrow(
                 () -> new PostException("게시글을 찾을 수 없습니다."));
+        return postDTO;
     }
 
     @Override
     public void updatePost(PostVO postVO) {
         postDAO.update(postVO);
+    }
+
+    @Override
+    public void increaseReadCount(Long id) {
+        postDAO.updateReadCount(id);
     }
 
     @Override

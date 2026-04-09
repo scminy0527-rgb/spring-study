@@ -26,8 +26,15 @@ public class PostDAO {
         return postMapper.select(id);
     }
 
+//    게시글 수정
     public void update(PostVO postVO){
         postMapper.update(postVO);
+    }
+
+//    수정 삭제는 그대로 update, delete 로 쓰는게 fm 관행
+//    게시글 조회수 증가
+    public void updateReadCount(Long id){
+        postMapper.updateReadCount(id);
     }
 
     public void delete(Long id){

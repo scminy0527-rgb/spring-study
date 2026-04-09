@@ -38,13 +38,13 @@ public class PostController {
         model.addAttribute("post", postService.getPost(id));
     }
 
-    @PostMapping("update")
+    @PostMapping("update-ok")
     public RedirectView updatePost(PostVO postVO) {
         postService.updatePost(postVO);
         return new RedirectView("/posts/read?id="+postVO.getId());
     }
 
-    @PostMapping("delete")
+    @PostMapping("delete-ok")
     public RedirectView delete(Long id) {
         postService.deletePost(id);
         return new RedirectView("/posts/list");

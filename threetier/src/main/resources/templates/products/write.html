@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>상품 작성 페이지</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form th:action="@{/products/write-ok}" method="post" th:object="${productVO}">
+        <input class="pd-info" type="text" th:field="*{productName}" placeholder="상품 이름을 입력하세요">
+        <input class="pd-info"  type="text" th:field="*{productPrice}" placeholder="상품 가격을 입력하세요">
+        <input class="pd-info" type="text" th:field="*{productStock}" placeholder="상품 재고를 입력하세요">
+        <input type="text" th:field="*{productBrand}" placeholder="상품 브랜드를 입력하세요">
+
+        <button type="button">상품 추가</button>
+    </form>
+</body>
+<script>
+    const btn = document.querySelector("button");
+    const inputs = document.querySelectorAll(".pd-info");
+    const form = document.querySelector("form");
+
+    btn.addEventListener("click", () => {
+        for(let input of inputs){
+            if(input.value == "" || input.value == null){
+                return alert(input.name + "값이 없습니다.");
+            }
+        }
+        form.submit();
+    })
+</script>
+</html>

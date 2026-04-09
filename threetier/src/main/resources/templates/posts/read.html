@@ -11,11 +11,11 @@
     <th:block th:object="${post}">
         <p th:text="*{postTitle}"></p>
         <p th:text="*{postContent}"></p>
-        <p th:text="*{postReadCount}"></p>
+        <p th:text="'조회수: ' + *{postReadCount}"></p>
         <p th:text="*{memberName}"></p>
 
         <button th:onclick="|location.href='@{/posts/update(id=*{id})}'|">수정 하기</button>
-        <form th:action="@{/posts/delete(id=*{id})}" method="post">
+        <form th:action="@{/posts/delete-ok(id=*{id})}" method="post">
             <button>게시글 삭제</button>
         </form>
     </th:block>

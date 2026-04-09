@@ -24,6 +24,12 @@
         WHERE ID = #{id}
     </update>
 
+    <update id="updateReadCount" parameterType="Long">
+        UPDATE TBL_POST
+        SET POST_READ_COUNT = POST_READ_COUNT + 1
+        WHERE ID = #{id}
+    </update>
+
     <delete id="delete" parameterType="Long">
         DELETE FROM TBL_POST
         WHERE ID = #{id}

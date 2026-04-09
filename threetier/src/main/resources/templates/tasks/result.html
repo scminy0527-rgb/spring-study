@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>결과</title>
+</head>
+<body>
+    <th:block th:object="${taskVO}">
+        <p th:text="'국어: ' + *{kor} + '점'"></p>
+        <p th:text="'수학: ' + *{eng} + '점'"></p>
+        <p th:text="'영어: ' + *{math} + '점'"></p>
+        <p th:text="'총점: ' + *{getTotalScore} + '점'"></p>
+        <p th:text="'평균 점수: ' + *{getAverageScore} + '점'"></p>
+    </th:block>
+</body>
+</html>

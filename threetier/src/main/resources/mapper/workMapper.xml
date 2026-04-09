@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.threetier.mapper.WorkMapper">
+    <insert id="insert" parameterType="WorkVO">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            SELECT SEQ_WORK.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_WORK (ID, WORK_NAME, WORK_START)
+        VALUES (#{id}, #{workName}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="existByWorkNameAndWorkStart" parameterType="WorkVO" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_WORK
+        WHERE TO_CHAR(WORK_START,'YYYY-MM-DD') = #{workStart}
+          AND WORK_NAME = #{workName}
+    </select>
+
+    <select id="selectLateStatusById" parameterType="Long" resultType="int">
+        SELECT
+            CASE WHEN TO_CHAR(WORK_START,'HH24:MI:SS') > '09:00:59'
+                     THEN 1 ELSE 0 END AS IS_LATE
+        FROM TBL_WORK
+        WHERE ID = #{id}
+    </select>
+
+
+
+    <update id="updateWorkEnd" parameterType="WorkVO">
+        UPDATE TBL_WORK
+        SET WORK_END = CURRENT_TIMESTAMP
+        WHERE TO_CHAR(WORK_START,'YYYY-MM-DD') = #{workStart}
+            AND WORK_NAME = #{workName}
+    </update>
+
+    <select id="existByWorkNameAndWorkEnd" parameterType="WorkVO" resultType="int">
+        SELECT COUNT(*)
+        FROM TBL_WORK
+        WHERE TO_CHAR(WORK_END,'YYYY-MM-DD') = #{workEnd}
+            AND WORK_NAME = #{workName}
+    </select>
+
+    <select id="selectExitEarlyStatusByWorkStartAndWorkNameAndWorkEnd" parameterType="WorkVO" resultType="int">
+        SELECT
+            CASE WHEN TO_CHAR(WORK_END,'HH24:MI:SS') > '18:00:00'
+                    THEN 0 ELSE 1 END AS IS_LEAVE_EARLY
+        FROM TBL_WORK
+        WHERE TO_CHAR(WORK_START,'YYYY-MM-DD') = #{workStart}
+        AND WORK_NAME = #{workName}
+        AND WORK_END IS NOT NULL
+    </select>
+
+</mapper>

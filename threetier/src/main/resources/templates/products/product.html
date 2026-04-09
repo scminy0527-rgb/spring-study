@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>상품 상세 페이지</title>
+</head>
+<body>
+    <th:block th:object="${product}">
+        <p th:text="'상품 번호: ' + *{id}"></p>
+        <p th:text="'상품 이름: ' + *{productName}"></p>
+        <p th:text="'상품 가격: ' + *{productPrice}+'원'"></p>
+        <p th:text="'상품 재고 수량: ' + *{productStock} + '개'"></p>
+        <p th:text="'상품 브랜드: ' + *{productBrand}"></p>
+    </th:block>
+</body>
+</html>
