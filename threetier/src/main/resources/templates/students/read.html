@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>학생의 상세 정보</title>
+</head>
+<body>
+    <th:block th:object="${studentDTO}">
+        <p th:text="'이름: ' + *{studentName}"></p>
+        <p th:text="'국어: ' + *{studentKor}+'점'"></p>
+        <p th:text="'영어: ' + *{studentEng}+'점'"></p>
+        <p th:text="'수학: ' + *{studentMath}+'점'"></p>
+        <p th:text="'총 점수: ' + *{total}+'점'"></p>
+        <p th:text="'평균 점수: ' + *{average}+'점'"></p>
+    </th:block>
+</body>
+</html>

@@ -47,8 +47,30 @@ public class WorkController {
     }
 
 //    퇴근 버튼 눌렀을 때
-    @GetMapping("exit-result")
-    public void goToExitResult(Model model){
+    @PostMapping("exit")
+    public RedirectView exit(WorkVO workVO, RedirectAttributes redirectAttributes){
+        LocalDate nowDate = LocalDate.now();
+        workVO.setWorkStart(nowDate.toString());
+        workVO.setWorkEnd(nowDate.toString());
+        if(workService.endWork(workVO)){
+//            퇴근 완료
+            return new RedirectView("/works/exit-result?workName="+workVO.getWorkName());
+        } else {
+            redirectAttributes.addFlashAttribute("notAvailExit",true);
+            return new RedirectView("/works/company");
+        }
+    }
 
+
+    @GetMapping("exit-result")
+    public void goToExitResult(Model model, String workName){
+        LocalDate nowDate = LocalDate.now();
+        WorkVO workVO = new WorkVO();
+
+        workVO.setWorkStart(nowDate.toString());
+        workVO.setWorkEnd(nowDate.toString());
+        workVO.setWorkName(workName);
+
+        model.addAttribute("isNotEarly",workService.isJotai(workVO));
     }
 }

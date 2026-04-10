@@ -7,5 +7,8 @@ public interface WorkService {
     public boolean isLate(Long id);
 
     public boolean endWork(WorkVO workVO);
-    public boolean isEarlyExit();
+    public boolean isEarlyExit(WorkVO workVO);
+
+    public boolean isComeWork(WorkVO workVO);
+    public boolean isJotai(WorkVO workVO);
 }

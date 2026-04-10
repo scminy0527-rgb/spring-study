@@ -12,11 +12,19 @@
         <input type="text" th:field="*{workName}" placeholder="이름을 입력하세요">
         <button>출근 하기</button>
     </form>
+    <form th:action="@{/works/exit}" method="post" th:object="${workVO}">
+        <input type="text" th:field="*{workName}" placeholder="이름을 입력하세요">
+        <button>퇴근 하기</button>
+    </form>
 </body>
-<script>
+<script th:inline="javascript">
     const isAlreadyWork = [[${isAlreadyWork}]];
+    const notAvailExit = [[${notAvailExit}]];
     if(isAlreadyWork != null){
         alert("이미 출근하셨습니다.");
+    }
+    if(notAvailExit != null){
+        alert("퇴실 불가합니다. 관리자 문의 필요");
     }
 </script>
 </html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>학생 정보 입력</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>학생 등록 페이지</h1>
+    <form th:action="@{/students/register-ok}" method="post" th:object="${studentVO}">
+        <input type="text" th:field="*{studentName}" placeholder="이름을 입력하세요">
+
+        <span>국어</span>
+        <input type="number" th:field="*{StudentKor}" placeholder="국어점수를 입력하세요">
+
+        <span>영어</span>
+        <input type="number" th:field="*{StudentEng}" placeholder="영어점수를 입력하세요">
+
+        <span>수학</span>
+        <input type="number" th:field="*{StudentMath}" placeholder="수학점수를 입력하세요">
+
+        <button>작성하기</button>
+    </form>
+</body>
+<script th:inline="javascript">
+
+</script>
+</html>

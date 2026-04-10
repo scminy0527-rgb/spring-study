@@ -26,6 +26,6 @@ public class StudentVO {
     private int StudentKor;
     private int StudentEng;
     private int StudentMath;
-    private int total;
-    private double average;
+//    여기 위에 까지가 VO 라는게 fm 개념
+//    테이블의 값을 1:1 매팽 시키기 위한거
 }

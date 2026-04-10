@@ -13,8 +13,10 @@
         <typeAlias type="com.app.threetier.domain.vo.ProductVO" alias="ProductVO"/>
         <typeAlias type="com.app.threetier.domain.vo.WorkVO" alias="WorkVO"/>
         <typeAlias type="com.app.threetier.domain.vo.StudentVO" alias="StudentVO"/>
+        <typeAlias type="com.app.threetier.domain.vo.CompanyVO" alias="CompanyVO"/>
 
         <!--DTO alias-->
         <typeAlias type="com.app.threetier.domain.dto.PostDTO" alias="PostDTO"/>
+        <typeAlias type="com.app.threetier.domain.dto.StudentDTO" alias="StudentDTO"/>
     </typeAliases>
 </configuration>

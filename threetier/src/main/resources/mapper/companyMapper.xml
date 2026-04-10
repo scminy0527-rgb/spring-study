@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.threetier.mapper.CompanyMapper">
+    <insert id="insert" parameterType="CompanyVO">
+        INSERT INTO TBL_COMPANY
+        <choose>
+            <when test="companyWorkStart != null">
+                VALUES (SEQ_COMPANY.NEXTVAL, #{companyName}, TO_DATE(#{companyWorkStart}, 'YYYY-MM-DD HH24:MI:SS'), NULL)
+            </when>
+            <otherwise>
+                VALUES (SEQ_COMPANY.NEXTVAL, #{companyName}, NULL, TO_DATE(#{companyWorkEnd}, 'YYYY-MM-DD HH24:MI:SS'))
+            </otherwise>
+        </choose>
+    </insert>
+</mapper>

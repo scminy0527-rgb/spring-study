@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.threetier.mapper.StudentMapper">
+
+    <insert id="insert" parameterType="StudentVO">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            SELECT SEQ_STUDENT.nextval FROM DUAL
+        </selectKey>
+        INSERT INTO TBL_STUDENT
+        VALUES (#{id}, #{studentName}, #{StudentKor}, #{StudentEng}, #{StudentMath})
+    </insert>
+
+    <!-- 전체 조회 -->
+    <select id="selectAll" resultType="StudentDTO">
+        SELECT ID, STUDENT_NAME, STUDENT_KOR, STUDENT_ENG, STUDENT_MATH, TOTAL, AVERAGE
+        FROM VIEW_STUDENT
+    </select>
+
+    <!-- 단일 조회 -->
+    <select id="selectById" parameterType="Long" resultType="StudentDTO">
+        SELECT ID, STUDENT_NAME, STUDENT_KOR, STUDENT_ENG, STUDENT_MATH, TOTAL, AVERAGE
+        FROM VIEW_STUDENT
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 업데이트 -->
+    <update id="update" parameterType="StudentVO">
+        UPDATE TBL_STUDENT
+        SET STUDENT_NAME = #{studentName}, STUDENT_KOR = #{StudentKor}, STUDENT_ENG = #{StudentEng}, STUDENT_MATH = #{StudentMath}
+        WHERE ID = #{id}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_STUDENT
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>

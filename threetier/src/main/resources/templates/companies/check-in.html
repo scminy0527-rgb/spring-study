@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>출퇴근 등록</title>
+</head>
+<body>
+    <form th:action="@{/companies/check-in-ok}" method="post" th:object="${companyVO}">
+        <input th:field="*{companyName}" placeholder="회사이름 입력" />
+        <input type="hidden" name="flag" />
+        <button type="button">출근</button>
+        <button type="button">퇴근</button>
+    </form>
+</body>
+<script th:inline="javascript">
+    // dom 이용 해서 버튼이랑 양식 가져오기
+    const buttons = document.querySelectorAll("button");
+    const form = document.querySelector("form");
+
+    // 각 버튼을 클릭 했을 때 수행할 동작 정의
+    // 해당 버튼의 내부 text 값을 flag 라는 field 의 값으로 집어넣기
+    // 그리고 버튼을 누르면 제출이 될 수 있도록 하기
+    buttons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            const flag = e.target.innerText;
+            const flagInput = document.querySelector("input[name='flag']");
+            flagInput.value = flag == "출근" ? "getToWork" : "leaveWork";
+            form.submit();
+        });
+    });
+</script>
+</html>
