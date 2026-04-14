@@ -1,5 +1,6 @@
 package com.app.restful.mapper;
 
+import com.app.restful.domain.dto.MemberJoinRequestDTO;
 import com.app.restful.domain.vo.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -27,5 +28,7 @@ public interface MemberMapper {
 
 //    회원 탈퇴
     public void delete(Long id);
+
+//    멤버의 번호와 이메일 토대로 해서 존재 유무 확인
     public int existByMemberIdAndMemberEmailForUpdate(MemberVO memberVO);
 }

@@ -1,7 +1,13 @@
 package com.app.restful.service;
 
+import com.app.restful.domain.dto.MemberJoinRequestDTO;
+import com.app.restful.domain.dto.MemberLoginRequestDTO;
 import com.app.restful.domain.dto.MemberResponseDTO;
+import com.app.restful.domain.dto.MemberUpdateRequestDTO;
 import com.app.restful.domain.vo.MemberVO;
+import com.app.restful.exceptions.DuplicateEmailException;
+import com.app.restful.exceptions.MemberException;
+import com.app.restful.exceptions.MemberLoginException;
 import com.app.restful.repository.MemberDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,26 +24,55 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDAO memberDAO;
 
     @Override
-    public void join(MemberVO memberVO) {
+    public void join(MemberJoinRequestDTO memberJoinRequestDTO) {
+//        이메일 중복 여부 확인
+//        서비스 단에서 DTO 를 VO 로 옮겨 담는다
+        this.checkEmailDuplicate(memberJoinRequestDTO.getMemberEmail());
+        memberDAO.join(MemberVO.from(memberJoinRequestDTO));
+    }
 
+//    이메일 중복 여부 검사 하는 함수
+//    해당 이메일로 된 계정이 몇개 있냐 확인
+//    값이 0 이 아니면 해당 이메일은 중복 이메일
+//    그런데 그냥 void 형태로 놔두고 던지는거도 가능
+    @Override
+    public void checkEmailDuplicate(String email) {
+        if(memberDAO.existByEmail(email) != 0){
+            throw new DuplicateEmailException(email);
+        }
+    }
+
+//    로그인 서비스 시에는 화면으로 비밀번호를 절 때 주면 안된다
+//    아이디 또는 비밀번호가 일치 하지 않으면 예외를 던져야 한다
+//    정석대로 하려면 throw 는 서비스 단 에서 던져야 함
+    @Override
+    public MemberResponseDTO login(MemberLoginRequestDTO memberLoginRequestDTO) {
+        return memberDAO
+                .findByEmailAndPassword(MemberVO.from(memberLoginRequestDTO))
+                .map(MemberResponseDTO::from)
+                .orElseThrow(() -> {
+                    throw new MemberLoginException("아이디 또는 비밀번호를 확인하세요");
+                });
     }
 
     @Override
-    public Optional<MemberVO> login(MemberVO memberVO) {
-        return Optional.empty();
+    public void checkUserExist(MemberVO memberVO) {
+        Optional<MemberVO> foundMember = Optional.ofNullable(memberVO);
+        if (!foundMember.isPresent()) {
+            throw new MemberLoginException("로그인 실패");
+        }
     }
 
 //    회원 정보 조회 서비스
     @Override
-    public Optional<MemberResponseDTO> getMemberInfo(Long id) {
+    public MemberResponseDTO getMemberInfo(Long id) {
 //        회원 비밀번호 제거해야 하는 서비스
-        MemberVO foundMember = memberDAO.findById(id);
-
-//        비밀번호 필드가 없는 새로운 DTO 에 담아서 안전하게 반환
-        MemberResponseDTO memberResponseDTO = MemberResponseDTO.from(foundMember);
-        return Optional.ofNullable(memberResponseDTO);
+        return memberDAO.findById(id)
+                .map(MemberResponseDTO::from)
+                .orElseThrow(() -> {throw new MemberException("해당 회원을 찾을 수 없습니다."); });
     }
 
+//    회원 목록을 가져오는 서비스
     @Override
     public List<MemberResponseDTO> getMembers() {
         List<MemberVO> memberVOList = memberDAO.findAll();
@@ -49,5 +84,20 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
 
         return members;
+    }
+
+//    회원 정보 수정을 하는 서비스
+//    하기 전 이메일 중복 여부도 체크 해야 함
+    @Override
+    public void modifyMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO) {
+//        만약 바꾸려고 하는 이메일이 중복 이면 에러 방출해야함
+        memberDAO.update(MemberVO.from(memberUpdateRequestDTO));
+    }
+
+//    회원 탈퇴를 하는 서비스
+    @Override
+    public void withdrawMember(Long id) {
+//        참조하는 포스트 게시판 삭제 해야함
+        memberDAO.delete(id);
     }
 }

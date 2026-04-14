@@ -1,6 +1,7 @@
 package com.app.restful.domain.dto;
 
 import com.app.restful.domain.vo.MemberVO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +9,13 @@ import org.springframework.stereotype.Component;
 //화면에는 줘야 하는 값과 주면 안되는 값이 존재한다. 따라서 이를 설정해야 한다.
 @Component
 @Data
+@Schema(description = "회원 정보")
 public class MemberResponseDTO {
+    @Schema(description = "회원 번호", required = true, example = "1")
     private Long id;
+    @Schema(description = "회원 이메일", required = true, example = "test123@naver.com")
     private String memberEmail;
+    @Schema(description = "회원 이름", example = "홍길동")
     private String memberName;
 
 //    초기화 생성자 만들면 기본 생성자가 없어서 에러가 발생할 수 있다.

@@ -12,6 +12,14 @@
         <typeAlias type="com.app.restful.domain.vo.PostVO" alias="PostVO"/>
 
         <!--DTO alias-->
+        <!--멤버 DTO-->
         <typeAlias type="com.app.restful.domain.dto.PostDTO" alias="PostDTO"/>
+        <typeAlias type="com.app.restful.domain.dto.MemberJoinRequestDTO" alias="MemberJoinRequestDTO"/>
+        <typeAlias type="com.app.restful.domain.dto.MemberLoginRequestDTO" alias="MemberLoginRequestDTO"/>
+        <typeAlias type="com.app.restful.domain.dto.MemberUpdateRequestDTO" alias="MemberUpdateRequestDTO"/>
+
+        <!--게시글 관련 DTO-->
+        <typeAlias type="com.app.restful.domain.dto.PostDTO" alias="PostDTO"/>
+
     </typeAliases>
 </configuration>
