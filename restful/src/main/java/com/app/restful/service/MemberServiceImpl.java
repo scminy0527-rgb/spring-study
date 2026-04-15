@@ -9,6 +9,7 @@ import com.app.restful.exceptions.DuplicateEmailException;
 import com.app.restful.exceptions.MemberException;
 import com.app.restful.exceptions.MemberLoginException;
 import com.app.restful.repository.MemberDAO;
+import com.app.restful.repository.PostDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberDAO memberDAO;
+    private final PostDAO postDAO;
 
     @Override
     public void join(MemberJoinRequestDTO memberJoinRequestDTO) {
@@ -42,7 +44,14 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-//    로그인 서비스 시에는 화면으로 비밀번호를 절 때 주면 안된다
+    @Override
+    public void checkMemberIdExists(Long id) {
+        if(!memberDAO.findById(id).isPresent()){
+            throw new MemberException("해당 멤버가 존재하지 않습니다.");
+        }
+    }
+
+    //    로그인 서비스 시에는 화면으로 비밀번호를 절 때 주면 안된다
 //    아이디 또는 비밀번호가 일치 하지 않으면 예외를 던져야 한다
 //    정석대로 하려면 throw 는 서비스 단 에서 던져야 함
     @Override
@@ -98,6 +107,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void withdrawMember(Long id) {
 //        참조하는 포스트 게시판 삭제 해야함
+        postDAO.deleteByMemberId(id);
         memberDAO.delete(id);
     }
 }

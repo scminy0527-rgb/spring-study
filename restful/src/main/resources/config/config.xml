@@ -20,6 +20,8 @@
 
         <!--게시글 관련 DTO-->
         <typeAlias type="com.app.restful.domain.dto.PostDTO" alias="PostDTO"/>
+        <typeAlias type="com.app.restful.domain.dto.PostWriteRequestDTO" alias="PostWriteRequestDTO"/>
+        <typeAlias type="com.app.restful.domain.dto.PostUpdateRequestDTO" alias="PostUpdateRequestDTO"/>
 
     </typeAliases>
 </configuration>

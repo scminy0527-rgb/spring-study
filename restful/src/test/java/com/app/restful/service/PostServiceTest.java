@@ -1,6 +1,8 @@
 package com.app.restful.service;
 
 import com.app.restful.domain.dto.PostDTO;
+import com.app.restful.domain.dto.PostUpdateRequestDTO;
+import com.app.restful.domain.dto.PostWriteRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,38 @@ public class PostServiceTest {
     public void getPostTest() {
         PostDTO post = postService.getPost(999L);
         log.info("게시글: {}", post.toString());
+    }
+
+//    포스트 작성하는 테스트
+    @Test
+    public void writePostTest() {
+        PostWriteRequestDTO postWriteRequestDTO = new PostWriteRequestDTO();
+        postWriteRequestDTO.setPostContent("봄봄봄 봄이 왔어요");
+        postWriteRequestDTO.setPostTitle("스프링2");
+        postWriteRequestDTO.setMemberId(2L);
+
+        postService.writePost(postWriteRequestDTO);
+    }
+
+//    포스트 내용 수정하는 테스트
+    @Test
+    public void updatePostTest() {
+        PostUpdateRequestDTO postUpdateRequestDTO = new PostUpdateRequestDTO();
+        postUpdateRequestDTO.setId(64L);
+        postUpdateRequestDTO.setPostTitle("안녕");
+        postUpdateRequestDTO.setMemberId(8L);
+        postService.updatePost(postUpdateRequestDTO);
+    }
+
+//    포스트 삭제하는 테스트
+    @Test
+    public void deletePostTest() {
+        postService.deletePost(49L);
+    }
+
+//    회원 탈퇴 시 작성한 모든 게시글 삭제 서비스 테스트
+    @Test
+    public void deleteMembersAllPostsTest() {
+        postService.deleteMembersAllPosts(3L);
     }
 }

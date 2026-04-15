@@ -16,6 +16,9 @@ public interface MemberService {
 //    이메일 중복 여부 확인
     public void checkEmailDuplicate(String email);
 
+//    아이디 존재 여부 확인
+    public void checkMemberIdExists(Long id);
+
 //    로그인 (사실은 token 을 반환하는걸로 해야 함)
     public MemberResponseDTO login(MemberLoginRequestDTO memberLoginRequestDTO);
 

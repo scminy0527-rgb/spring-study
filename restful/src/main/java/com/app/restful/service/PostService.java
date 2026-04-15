@@ -1,6 +1,8 @@
 package com.app.restful.service;
 
 import com.app.restful.domain.dto.PostDTO;
+import com.app.restful.domain.dto.PostUpdateRequestDTO;
+import com.app.restful.domain.dto.PostWriteRequestDTO;
 import com.app.restful.domain.vo.PostVO;
 
 import java.util.List;
@@ -13,10 +15,10 @@ public interface PostService {
     public PostDTO getPost(Long id);
 
 //    게시글 작성
-    public void writePost(PostVO  postVO);
+    public void writePost(PostWriteRequestDTO postWriteRequestDTO);
 
 //    게시글 수정
-    public void updatePost(PostVO  postVO);
+    public void updatePost(PostUpdateRequestDTO postUpdateRequestDTO);
 
 //    게시글 삭제
     public void deletePost(Long id);

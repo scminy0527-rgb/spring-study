@@ -1,6 +1,8 @@
 package com.app.restful.service;
 
 import com.app.restful.domain.dto.PostDTO;
+import com.app.restful.domain.dto.PostUpdateRequestDTO;
+import com.app.restful.domain.dto.PostWriteRequestDTO;
 import com.app.restful.domain.vo.PostVO;
 import com.app.restful.exceptions.PostNotFoundException;
 import com.app.restful.repository.PostDAO;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostDAO postDAO;
+    private final MemberServiceImpl memberService;
 
     //    모든 게시글 조회
     @Override
@@ -33,25 +36,28 @@ public class PostServiceImpl implements PostService {
 
 //    게시글 작성
     @Override
-    public void writePost(PostVO postVO) {
+    public void writePost(PostWriteRequestDTO postWriteRequestDTO) {
 
+        postDAO.write(PostVO.from(postWriteRequestDTO));
     }
 
 //    게시글 수정
     @Override
-    public void updatePost(PostVO postVO) {
-
+    public void updatePost(PostUpdateRequestDTO  postUpdateRequestDTO) {
+//     그런데 원래대로라면 이때 해당 멤버가 있는지 확인을 해야 함
+        memberService.checkMemberIdExists(postUpdateRequestDTO.getMemberId());
+        postDAO.update(PostVO.from(postUpdateRequestDTO));
     }
 
 //    게시글 삭제
     @Override
     public void deletePost(Long id) {
-
+        postDAO.delete(id);
     }
 
 //    회원 탈퇴 시 작성한 모든 게시글 삭제
     @Override
     public void deleteMembersAllPosts(Long memberId) {
-
+        postDAO.deleteByMemberId(memberId);
     }
 }

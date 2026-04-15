@@ -7,6 +7,7 @@
             TBM.MEMBER_NAME, TBM.MEMBER_EMAIL
         FROM TBL_POST TBP
                  JOIN TBL_MEMBER TBM ON TBP.MEMBER_ID = TBM.ID
+        ORDER BY TBP.ID DESC
     </select>
 
     <select id="select" parameterType="Long" resultType="PostDTO">
@@ -17,5 +18,34 @@
                  JOIN TBL_MEMBER TBM ON TBP.MEMBER_ID = TBM.ID
         WHERE TBP.ID = #{id}
     </select>
+
+    <insert id="insert" parameterType="PostVO">
+        INSERT INTO TBL_POST (ID, POST_TITLE, POST_CONTENT, MEMBER_ID)
+        VALUES (SEQ_POST.NEXTVAL, #{postTitle}, #{postContent}, #{memberId})
+    </insert>
+
+    <update id="update" parameterType="PostVO">
+        UPDATE TBL_POST
+        <set>
+            <if test="postTitle != null and postTitle != ''">
+                ,POST_TITLE = #{postTitle}
+            </if>
+            <if test="postContent != null and postContent != ''">
+                ,POST_CONTENT = #{postContent}
+            </if>
+        </set>
+        WHERE ID = #{id}
+            AND MEMBER_ID = #{memberId}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM TBL_POST
+        WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteByMemberId" parameterType="Long">
+        DELETE FROM TBL_POST
+        WHERE MEMBER_ID = #{memberId}
+    </delete>
 
 </mapper>
