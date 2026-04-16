@@ -6,14 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@Schema(description = "게시글 내용 수정 시 필요 내용")
+@Schema(description = "게시글 수정 DTO")
 public class PostUpdateRequestDTO {
-    @Schema(description = "게시글 번호 (패스 배리어블로 받아야 함)", example = "1")
-    private Long id;
-    @Schema(description = "게시글 제목", required = true, example = "제목000")
+    @Schema(description = "수정된 게시글 제목", required = true, example = "제목000")
     private String postTitle;
-    @Schema(description = "게시글 글 내용", required = true, example = "안녕하세요~~....")
+    @Schema(description = "수정된 게시글 글 내용", required = true, example = "안녕하세요~~....")
     private String postContent;
-    @Schema(description = "작성자 번호", required = true, example = "1")
-    private Long memberId;
 }

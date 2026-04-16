@@ -11,6 +11,7 @@ import com.app.restful.exceptions.MemberLoginException;
 import com.app.restful.repository.MemberDAO;
 import com.app.restful.repository.PostDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,18 +41,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void checkEmailDuplicate(String email) {
         if(memberDAO.existByEmail(email) != 0){
-            throw new DuplicateEmailException(email);
+            throw new MemberException("이메일 중복입니다.", HttpStatus.CONFLICT);
         }
     }
 
     @Override
     public void checkMemberIdExists(Long id) {
         if(!memberDAO.findById(id).isPresent()){
-            throw new MemberException("해당 멤버가 존재하지 않습니다.");
+            throw new MemberException("해당 멤버가 존재하지 않습니다.",  HttpStatus.UNAUTHORIZED);
         }
     }
 
-    //    로그인 서비스 시에는 화면으로 비밀번호를 절 때 주면 안된다
+//    로그인 서비스 시에는 화면으로 비밀번호를 절 때 주면 안된다
 //    아이디 또는 비밀번호가 일치 하지 않으면 예외를 던져야 한다
 //    정석대로 하려면 throw 는 서비스 단 에서 던져야 함
     @Override
@@ -78,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
 //        회원 비밀번호 제거해야 하는 서비스
         return memberDAO.findById(id)
                 .map(MemberResponseDTO::from)
-                .orElseThrow(() -> {throw new MemberException("해당 회원을 찾을 수 없습니다."); });
+                .orElseThrow(() -> {throw new MemberException("해당 회원을 찾을 수 없습니다.",   HttpStatus.BAD_REQUEST); });
     }
 
 //    회원 목록을 가져오는 서비스

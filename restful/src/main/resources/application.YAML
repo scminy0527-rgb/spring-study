@@ -13,6 +13,8 @@ server:
 
 # mybatis
 spring:
+  ssl:
+    enabled: true # aws https 배포 설정
   datasource:
     hikari:
       driver-class-name: oracle.jdbc.OracleDriver
@@ -22,4 +24,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    cors:
+      allowed-origins: "http://localhost:3000"
+      allowed-methods: "*"
+      allowed-headers: "*"
+      allow-credentials: "true" # 쿠키 사용 허용
+
 

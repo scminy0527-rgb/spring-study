@@ -5,11 +5,12 @@ import com.app.restful.domain.vo.PostVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PostMapper {
 //    모든 게시글 들 불러오기
-    public List<PostDTO> selectAll();
+    public List<PostDTO> selectAll(Map<String, String> orders);
 
 //    게시글 상세 불러오기
     public PostDTO select(long id);

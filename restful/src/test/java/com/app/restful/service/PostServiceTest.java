@@ -16,18 +16,20 @@ public class PostServiceTest {
     @Autowired
     private PostServiceImpl postService;
 
+//    에러 나중에 해결
     @Test
     public void getAllPostsTest() {
-        List<PostDTO> posts = postService.getAllPosts();
+        List<PostDTO> posts = postService.getAllPosts("desc");
         log.info("포스트 전체 테스트");
         posts.stream()
                 .forEach((post) -> {log.info(post.toString());});
     }
 
-//    포스트 상세 불러오는 테스트
+
+    //    포스트 상세 불러오는 테스트
     @Test
-    public void getPostTest() {
-        PostDTO post = postService.getPost(999L);
+    public void getPostDetailTest() {
+        PostDTO post = postService.getPostDetail(999L);
         log.info("게시글: {}", post.toString());
     }
 
@@ -37,19 +39,16 @@ public class PostServiceTest {
         PostWriteRequestDTO postWriteRequestDTO = new PostWriteRequestDTO();
         postWriteRequestDTO.setPostContent("봄봄봄 봄이 왔어요");
         postWriteRequestDTO.setPostTitle("스프링2");
-        postWriteRequestDTO.setMemberId(2L);
 
-        postService.writePost(postWriteRequestDTO);
+        postService.writePost(postWriteRequestDTO, 3L);
     }
 
 //    포스트 내용 수정하는 테스트
     @Test
     public void updatePostTest() {
         PostUpdateRequestDTO postUpdateRequestDTO = new PostUpdateRequestDTO();
-        postUpdateRequestDTO.setId(64L);
         postUpdateRequestDTO.setPostTitle("안녕");
-        postUpdateRequestDTO.setMemberId(8L);
-        postService.updatePost(postUpdateRequestDTO);
+        postService.updatePost(postUpdateRequestDTO, 102L);
     }
 
 //    포스트 삭제하는 테스트

@@ -38,6 +38,7 @@
     <select id="selectAll" resultType="MemberVO">
         SELECT ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_NAME
         FROM TBL_MEMBER
+        ORDER BY ID DESC
     </select>
 
     <update id="update" parameterType="MemberVO">

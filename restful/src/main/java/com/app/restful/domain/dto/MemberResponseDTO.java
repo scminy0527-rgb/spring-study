@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 //화면에는 줘야 하는 값과 주면 안되는 값이 존재한다. 따라서 이를 설정해야 한다.
 @Component
 @Data
-@Schema(description = "회원 정보")
+@Schema(description = "회원 정보 응답 DTO")
 public class MemberResponseDTO {
     @Schema(description = "회원 번호", required = true, example = "1")
     private Long id;

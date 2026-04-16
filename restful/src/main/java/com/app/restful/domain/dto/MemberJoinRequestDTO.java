@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@Schema(description = "회원 가입 시 필요한 입력 값")
+@Schema(description = "회원 가입 DTO")
 public class MemberJoinRequestDTO {
     @Schema(description = "회원 이메일", required = true, example = "test123@gmail.com")
     private String memberEmail;

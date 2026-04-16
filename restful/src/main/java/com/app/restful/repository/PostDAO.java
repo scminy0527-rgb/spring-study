@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -15,8 +16,8 @@ public class PostDAO {
     private final PostMapper postMapper;
 
 //    모든 게시글 들 불러오기
-    public List<PostDTO> findAll() {
-        return postMapper.selectAll();
+    public List<PostDTO> findAll(Map<String, String> orders) {
+        return postMapper.selectAll(orders);
     }
 
 //    게시글 상세 불러오기
@@ -24,8 +25,8 @@ public class PostDAO {
         return Optional.ofNullable(postMapper.select(id));
     }
 
-//    게시글 작성하기
-    public void write(PostVO postVO) {
+//    게시글 작성하기 (작성은 주로 save 로 이름 함)
+    public void save(PostVO postVO) {
         postMapper.insert(postVO);
     }
 
