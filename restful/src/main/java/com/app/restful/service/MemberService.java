@@ -31,7 +31,7 @@ public interface MemberService {
     public List<MemberResponseDTO> getMembers();
 
 //    회원 수정
-    public void modifyMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO);
+    public void modifyMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO, Long id);
 
 //    회원 비밀번호 변경(마이페이지)
 //    회원 비밀번호 변경(로그인 전)

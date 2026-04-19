@@ -45,10 +45,10 @@
         UPDATE TBL_MEMBER
         <set>
             <if test="memberName != null and memberName != ''">
-                MEMBER_NAME = #{memberName}
+                ,MEMBER_NAME = #{memberName}
             </if>
             <if test="memberPassword != null and memberPassword != ''">
-                MEMBER_PASSWORD = #{memberPassword}
+                ,MEMBER_PASSWORD = #{memberPassword}
             </if>
         </set>
         WHERE ID = #{id}

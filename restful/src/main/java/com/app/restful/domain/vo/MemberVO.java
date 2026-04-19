@@ -35,7 +35,6 @@ public class MemberVO implements Serializable {
 
     public static MemberVO from (MemberUpdateRequestDTO memberUpdateRequestDTO) {
         MemberVO memberVO = new MemberVO();
-        memberVO.setId(Long.valueOf(memberUpdateRequestDTO.getId()));
         memberVO.setMemberName(memberUpdateRequestDTO.getMemberName());
         memberVO.setMemberPassword(memberUpdateRequestDTO.getMemberPassword());
 

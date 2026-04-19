@@ -61,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
                 .findByEmailAndPassword(MemberVO.from(memberLoginRequestDTO))
                 .map(MemberResponseDTO::from)
                 .orElseThrow(() -> {
-                    throw new MemberLoginException("아이디 또는 비밀번호를 확인하세요");
+                    throw new MemberException("아이디 또는 비밀번호를 확인하세요", HttpStatus.UNAUTHORIZED);
                 });
     }
 
@@ -99,9 +99,11 @@ public class MemberServiceImpl implements MemberService {
 //    회원 정보 수정을 하는 서비스
 //    하기 전 이메일 중복 여부도 체크 해야 함
     @Override
-    public void modifyMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO) {
+    public void modifyMemberInfo(MemberUpdateRequestDTO memberUpdateRequestDTO, Long id) {
 //        만약 바꾸려고 하는 이메일이 중복 이면 에러 방출해야함
-        memberDAO.update(MemberVO.from(memberUpdateRequestDTO));
+        MemberVO memberVO = MemberVO.from(memberUpdateRequestDTO);
+        memberVO.setId(id);
+        memberDAO.update(memberVO);
     }
 
 //    회원 탈퇴를 하는 서비스

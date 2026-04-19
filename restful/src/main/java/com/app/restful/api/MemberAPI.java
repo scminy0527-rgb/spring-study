@@ -116,8 +116,7 @@ public class MemberAPI {
     })
     public ResponseEntity<ApiResponseDTO> modifyMemberInfo(@PathVariable Long id, @RequestBody MemberUpdateRequestDTO memberUpdateRequestDTO) {
 //        사실은 비밀번호 암호화 로직 도 필요함
-        memberUpdateRequestDTO.setId(id);
-        memberService.modifyMemberInfo(memberUpdateRequestDTO);
+        memberService.modifyMemberInfo(memberUpdateRequestDTO, id);
 
 //        결과 응답 (요청에 대해서는 무조건 응답을 해줘야 한다)
         return ResponseEntity
@@ -130,7 +129,7 @@ public class MemberAPI {
     @DeleteMapping("/{id}")
     @Operation(summary = "회원 탈퇴 서비스", description = "회원 번호를 토대로 해서 해당 회원 정보를 삭제(탈퇴) 하는 기능")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"), // 200으로 도 해야 함
             @ApiResponse(responseCode = "401", description = "토큰 없음"),
             @ApiResponse(responseCode = "403", description = "권한 없음")
     })

@@ -62,10 +62,9 @@ public class MemberServiceTest {
     @Test
     public void modifyMemberInfoTest(){
         MemberUpdateRequestDTO memberUpdateRequestDTO = new MemberUpdateRequestDTO();
-        memberUpdateRequestDTO.setId(121L);
 //        memberUpdateRequestDTO.setMemberName("이서령");
         memberUpdateRequestDTO.setMemberPassword("test123!@#");
-        memberService.modifyMemberInfo(memberUpdateRequestDTO);
+        memberService.modifyMemberInfo(memberUpdateRequestDTO, 121L);
     }
 
     @Test

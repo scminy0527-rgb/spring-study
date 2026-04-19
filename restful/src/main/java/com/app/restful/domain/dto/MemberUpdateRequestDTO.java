@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Data
 @Schema(description = "회원 정보 수정 DTO")
 public class MemberUpdateRequestDTO {
-    @Schema(description = "회원 번호", example = "1", required = true)
-    private Long id;
+//    @Schema(description = "회원 번호(패스 배리어블로 감싸기)", example = "1")
+//    private Long id;
     @Schema(description = "회원 비밀번호", required = true, example = "test123!@#")
     private String memberPassword;
     @Schema(description = "회원 이름", example = "홍길동", required = true)
