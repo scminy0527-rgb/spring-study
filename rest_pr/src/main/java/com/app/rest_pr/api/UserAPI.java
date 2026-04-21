@@ -18,6 +18,7 @@ import java.util.List;
 public class UserAPI {
     private final UserService userService;
 
+//    유저 회원가입 하는 서비스
     @Operation(description = "회원가입 진행")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
@@ -29,14 +30,17 @@ public class UserAPI {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("회원가입 성공"));
     }
 
+//    전체 유저 정보를 불러오는 서비스 정의
     @Operation(description = "전체 유저 정보 불러오기")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 목록 조회 성공"),
             @ApiResponse(responseCode = "400", description = "조회 실패")
     })
     @GetMapping("")
-    public ResponseEntity<ApiResponseDTO> getUsers() {
-        List<UserResponseDTO> userResponseDTO = userService.getAllUsers();
+    public ResponseEntity<ApiResponseDTO> getUsers(
+            @RequestParam(value = "order", defaultValue = "") String order
+    ) {
+        List<UserResponseDTO> userResponseDTO = userService.getAllUsers(order);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponseDTO.of("유저 정보 불러오기 성공", userResponseDTO));

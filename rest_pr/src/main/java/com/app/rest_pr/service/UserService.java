@@ -16,7 +16,7 @@ public interface UserService {
     public void checkEmailDuplicate(String email);
 
 //    유저 전체 조회 서비스
-    public List<UserResponseDTO> getAllUsers();
+    public List<UserResponseDTO> getAllUsers(String order);
 
 //    유저 로그인 서비스
     public UserResponseDTO loginUser(UserLoginRequestDTO  userLoginRequestDTO);

@@ -14,7 +14,7 @@ public interface PostService {
     public PostDTO getPostDetail(Long id);
 
 //    게시글 작성
-    public void writePost(PostWriteRequestDTO postWriteRequestDTO, Long memberId);
+    public Long writePost(PostWriteRequestDTO postWriteRequestDTO, Long memberId);
 
 //    게시글 수정 (원래 대로 라면 여기서도 id 를 따로 해서 받는게 fm 방식임)
     public void updatePost(PostUpdateRequestDTO postUpdateRequestDTO, Long id);

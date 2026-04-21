@@ -14,7 +14,7 @@ public interface UserMapper {
     public int existByEmail(String email);
 
 //    모든 유저 불러오기
-    public List<UserVO> selectAll();
+    public List<UserVO> selectAll(String order);
 
 //    로그인 하기
     public UserVO selectByEmailAndPassword(UserVO userVO);

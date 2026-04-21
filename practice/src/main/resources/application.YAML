@@ -1,0 +1,33 @@
+#server
+server:
+  port: 10000
+
+#JDBC
+#spring:
+#  datasource:
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    url: jdbc:oracle:thin:@//localhost:1521/XE
+#    username: hr
+#    password: 1234
+
+
+# mybatis
+spring:
+  ssl:
+    enabled: true # aws https 배포 설정
+  datasource:
+    hikari:
+      driver-class-name: oracle.jdbc.OracleDriver
+      jdbc-url: jdbc:oracle:thin:@//localhost:1521/XE
+      username: hr
+      password: 1234
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    cors:
+      allowed-origins: "http://localhost:3000"
+      allowed-methods: "*"
+      allowed-headers: "*"
+      allow-credentials: "true" # 쿠키 사용 허용
+
+

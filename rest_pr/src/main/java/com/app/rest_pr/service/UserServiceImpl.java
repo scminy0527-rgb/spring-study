@@ -38,9 +38,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+//    유저 반환 순서 정하는 부분
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-        List<UserResponseDTO> userList = userDAO.findAll().stream()
+    public List<UserResponseDTO> getAllUsers(String order) {
+        List<UserResponseDTO> userList = userDAO.findAll(order).stream()
                 .map(UserResponseDTO::from)
                 .collect(Collectors.toList());
 

@@ -30,7 +30,7 @@ public class UserServiceTest {
 //    유저 전체 정보 불러오는 서비스
     @Test
     public void testGetAllUser() {
-        userService.getAllUsers().forEach((user) -> {
+        userService.getAllUsers("desc").forEach((user) -> {
             log.info("user 의 정보 {}", user);
         });
     }

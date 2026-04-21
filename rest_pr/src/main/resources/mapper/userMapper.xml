@@ -2,8 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.rest_pr.mapper.UserMapper">
     <insert id="insert" parameterType="UserVO">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            SELECT SEQ_USER.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO TBL_USER
-        VALUES (SEQ_USER.NEXTVAL, #{userName}, #{userEmail}, #{userPassword}, #{userNickname})
+        VALUES (#{id}, #{userName}, #{userEmail}, #{userPassword}, #{userNickname})
     </insert>
 
     <select id="existByEmail" parameterType="String" resultType="int">
@@ -12,10 +15,18 @@
         WHERE USER_EMAIL = #{userEmail}
     </select>
 
-    <select id="selectAll" resultType="UserVO">
+
+    <select id="selectAll" resultType="UserVO" parameterType="String">
         SELECT ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_NICKNAME
         FROM TBL_USER
-        ORDER BY ID DESC
+        <choose>
+            <when test="order == 'desc'">
+                ORDER BY ID DESC
+            </when>
+            <otherwise>
+                ORDER BY ID
+            </otherwise>
+        </choose>
     </select>
 
     <select id="selectByEmailAndPassword" parameterType="UserVO" resultType="UserVO">

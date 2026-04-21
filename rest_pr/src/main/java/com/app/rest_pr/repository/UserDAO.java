@@ -27,8 +27,8 @@ public class UserDAO {
     }
 
 //    전체 유저 조회
-    public List<UserVO> findAll(){
-        return userMapper.selectAll();
+    public List<UserVO> findAll(String order){
+        return userMapper.selectAll(order);
     }
 
 //    로그인 하기

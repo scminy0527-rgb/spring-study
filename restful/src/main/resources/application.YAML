@@ -31,3 +31,11 @@ spring:
       allow-credentials: "true" # 쿠키 사용 허용
 
 
+# api 키 등의 환경 변수를 담는 곳
+api:
+  base-url: "https://apis.data.go.kr/B551011/KorPetTourService2"
+  area-based-list: "areaBasedList2"
+  service-key: "37e7928dc8b8141c07cfe4187549b4f99c5d4199ba8f4b320e1c3db69da22687"
+
+  base-url2: "https://api.odcloud.kr/api"
+  uddi-99771417: "/15071311/v1/uddi:99771417-a036-46f1-8ad5-8edf4591c2ee"

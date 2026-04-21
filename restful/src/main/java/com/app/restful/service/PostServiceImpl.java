@@ -42,10 +42,13 @@ public class PostServiceImpl implements PostService {
 
 //    게시글 작성
     @Override
-    public void writePost(PostWriteRequestDTO postWriteRequestDTO, Long memberId) {
+    public Long writePost(PostWriteRequestDTO postWriteRequestDTO, Long memberId) {
         PostVO postVO = PostVO.from(postWriteRequestDTO);
         postVO.setMemberId(memberId);
         postDAO.save(postVO);
+
+//        하고 남은 아이디를 화면단으로 보내주기
+        return postVO.getId();
     }
 
 //    게시글 수정

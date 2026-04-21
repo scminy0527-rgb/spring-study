@@ -74,10 +74,10 @@ public class PostAPI {
     @PostMapping("")
     public ResponseEntity<ApiResponseDTO> writePost(@RequestBody PostWriteRequestDTO postWriteRequestDTO) {
 //        멤버 아이디는 추후 토큰으로 추출 하기에 임의로 넣어놓음
-        postService.writePost(postWriteRequestDTO, 3L);
+        Long id = postService.writePost(postWriteRequestDTO, 3L);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponseDTO.of("게시글 작성 성공"));
+                .body(ApiResponseDTO.of("게시글 작성 성공", id));
     }
 
 //    게시글을 수정하는 서비스
