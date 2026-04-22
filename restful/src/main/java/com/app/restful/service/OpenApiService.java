@@ -22,6 +22,9 @@ public interface OpenApiService {
     // 단일 페이지 DTO 조회 (테스트·미리보기용)
     List<PetTourDTO> fetchPetTourPage(int pageNo, int numOfRows) throws JsonProcessingException;
 
+//    오픈 api 패치 레거시 버전
+    public List<PetTourDTO> fetchPetTourPage() throws IOException;
+
 
 //    교통 혼잡도 서비스
     public CongestionDTO fetchData2() throws URISyntaxException;

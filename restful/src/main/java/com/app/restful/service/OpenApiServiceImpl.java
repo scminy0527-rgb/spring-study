@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -65,7 +67,63 @@ public class OpenApiServiceImpl implements OpenApiService {
         return res;
     }
 
-//    아래는 레거시 프로젝트 기존 내용임
+    @Override
+    public List<PetTourDTO> fetchPetTourPage() throws IOException {
+//        먼저 uri 빌더 패턴을 이용해야 함
+        String urlStr = UriComponentsBuilder
+                .fromHttpUrl(baseUrl)
+                .path(areaBasedList)
+                .queryParam("serviceKey", serviceKey)
+                .queryParam("MobileOS", "ETC")
+                .queryParam("MobileApp", "TestApp")
+                .queryParam("_type", "json")
+                .build()
+                .toUriString();
+
+        URL url = new URL(urlStr);
+        log.info(urlStr);
+
+//        버퍼를 이용해서 파일 불러오는거 처리하기
+        BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(url.openStream(), "UTF-8"));
+
+        StringBuilder result = new StringBuilder();
+        String line;
+
+//        파일이 다 완료 될때까지 계속 반복 도는 개념
+        while ((line = bufferedReader.readLine()) != null) {
+            result.append(line);
+        }
+
+//        완료 후에는 버퍼를 닫아줘야 함
+        bufferedReader.close();
+
+//        JSON 응답
+        JsonNode jsonResponse = objectMapper.readTree(result.toString());
+        if(jsonResponse.has("error")){
+            return null;
+        }
+
+        JsonNode itemsArray = jsonResponse.get("response").get("body").get("items").get("item");
+        List<PetTourDTO> petTourList = new ArrayList<>();
+
+        for(JsonNode item : itemsArray){
+            PetTourDTO petTourDTO = new PetTourDTO();
+            petTourDTO.setTitle(item.get("title").asText());
+            petTourDTO.setAreaCode(item.get("areacode").asText());
+            petTourDTO.setTel(item.get("tel").asText());
+            petTourDTO.setContentId(item.get("contentid").asText());
+            petTourDTO.setFirstImage(item.get("firstimage").asText());
+            petTourDTO.setFirstImage2(item.get("firstimage2").asText());
+            petTourDTO.setZipcode(item.get("zipcode").asText());
+
+            petTourList.add(petTourDTO);
+        }
+
+        return petTourList;
+    }
+
+    //    아래는 레거시 프로젝트 기존 내용임
     @Override
     public List<JsonNode> fetchData() throws JsonProcessingException {
         int numOfRows = 100;
