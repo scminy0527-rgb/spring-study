@@ -8,7 +8,12 @@
 
     <typeAliases>
         <!--VO alias 붙이기-->
-        <typeAlias type="com.app.oauth.domain.vo.OauthMemberVO" alias="OauthMemberVO"/>
+        <typeAlias type="com.app.oauth.domain.vo.MemberVO" alias="MemberVO"/>
+        <typeAlias type="com.app.oauth.domain.vo.SocialMemberVO" alias="SocialMemberVO"/>
+
+
+        <!--DTO alias 설정-->
+        <typeAlias type="com.app.oauth.domain.dto.MemberDTO" alias="MemberDTO"/>
 
     </typeAliases>
 </configuration>

@@ -1,0 +1,19 @@
+package com.app.oauth.controller;
+
+import com.app.oauth.domain.dto.ApiResponseDTO;
+import com.app.oauth.exception.MemberException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class CustomExceptionHandler {
+
+    @ExceptionHandler(value = MemberException.class)
+    public ResponseEntity<ApiResponseDTO> handleMemberException(MemberException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponseDTO.of(e.getMessage()));
+    }
+}

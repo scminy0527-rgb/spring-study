@@ -1,0 +1,119 @@
+package com.app.oauth.service;
+
+import com.app.oauth.domain.dto.JwtTokenDTO;
+import com.app.oauth.domain.dto.MemberDTO;
+import com.app.oauth.domain.vo.MemberVO;
+import com.app.oauth.domain.vo.SocialMemberVO;
+import com.app.oauth.exception.MemberException;
+import com.app.oauth.repository.MemberDAO;
+import com.app.oauth.repository.SocialMemberDAO;
+import com.app.oauth.util.JwtTokenUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class})
+public class MemberServiceImpl implements MemberService {
+
+    private final MemberDAO memberDAO;
+    private final SocialMemberDAO socialMemberDAO;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+
+    //    회원 가입
+    @Override
+    public Map<String, Object> join(MemberDTO memberDTO) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>();
+
+//        해당 이메일로 회원이 있니?
+//        응(true) 이미 있는 회원이야 그래서 중복된 이메일 이야
+//        아니(false) 회원이 아니야 그래서 이걸로 회원가입 가능 해 ^^
+        if(memberDAO.existsByMemberEmail(memberDTO.getMemberEmail())){
+            throw new MemberException("중복된 이메일 입니다.", HttpStatus.BAD_REQUEST);
+        }
+
+//        화면에서 받은 로그인 요청 정보 (이메일: 비밀번호) 는 memberDTO 에 담아서 서버로 요청됨
+//        해당 dto 를 각각의 vo 에 옮겨 담아야 함
+        MemberVO memberVO = MemberVO.from(memberDTO);
+        SocialMemberVO socialMemberVO = SocialMemberVO.from(memberDTO);
+
+//        socialMemberVO.getSocialMemberProvider().equals("local"
+//        아래 코드가 더 좋은 코드임
+//        null 에 . 을 찍으면 npe 이나 문자열에 . 을 찍는건 절때로 에러가 안남
+        if("local".equals(socialMemberVO.getSocialMemberProvider())){
+            memberVO.setMemberPassword(passwordEncoder.encode(memberDTO.getMemberPassword()));
+        }
+
+        memberDAO.save(memberVO);
+        socialMemberVO.setMemberId(memberVO.getId());
+
+        socialMemberDAO.save(socialMemberVO);
+
+        result.put("success", true);
+        result.put("message", "회원가입이 완료되었습니다.");
+
+        claims.put("id", memberVO.getId());
+        claims.put("memberEmail", memberVO.getMemberEmail());
+        claims.put("memberProvider", socialMemberVO.getSocialMemberProvider());
+
+        result.put("claim", claims);
+        return result;
+    }
+
+//    일반 로그인
+    @Override
+    public JwtTokenDTO login(MemberDTO memberDTO) {
+//        사용자가 맞는지 검사 (이메일과 비밀번호, 프로바이더 local)
+//        항상 예외를 먼저 던져야 함
+//        조건문 안에 들어가는거? 회원이야? 응(true) 회원이야. 아니(false) 회원이 아니야
+//        회원이 아닐 때에 회원이 아니라는 문구가 수행 되야 함
+        if(!memberDAO.existsByMemberEmail(memberDTO.getMemberEmail())){
+            throw new MemberException("회원이 아닙니다.",  HttpStatus.BAD_REQUEST);
+        }
+
+        MemberVO memberVO = MemberVO.from(memberDTO);
+
+//        이미 이메일 검수 되었기에 문제 없음
+        MemberDTO foundMember = memberDAO
+                .findByMemberEmail(memberVO.getMemberEmail())
+                .orElseThrow(() -> {
+                    throw new MemberException("에러", HttpStatus.BAD_REQUEST);
+                });
+
+//        서버에 있는 유저 비밀번호랑 유저가 입력한 비밀번호가 같니?
+        if(!passwordEncoder.matches(memberVO.getMemberPassword(), foundMember.getMemberPassword())){
+            throw new MemberException("비밀번호가 틀립니다.",  HttpStatus.BAD_REQUEST);
+        }
+
+
+//        토큰 만들기
+        Map<String, String> claims = new HashMap<>();
+        JwtTokenDTO jwtTokenDTO = new JwtTokenDTO();
+
+        claims.put("id", foundMember.getId() + "");
+        claims.put("memberEmail", foundMember.getMemberEmail());
+
+        String jwtKey = jwtTokenUtil.generateAccessToken(claims);
+        String jwtRefKey = jwtTokenUtil.generateRefreshToken(claims);
+
+//        페이 로드로 각각 담아야 함
+        jwtTokenDTO.setAccessToken(jwtKey);
+        jwtTokenDTO.setRefreshToken(jwtRefKey);
+
+        return jwtTokenDTO;
+    }
+
+//    소셜 로그인
+    @Override
+    public void socialLogin(MemberDTO memberDTO) {
+
+    }
+}
