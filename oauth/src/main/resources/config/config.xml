@@ -14,6 +14,7 @@
 
         <!--DTO alias 설정-->
         <typeAlias type="com.app.oauth.domain.dto.MemberDTO" alias="MemberDTO"/>
+        <typeAlias type="com.app.oauth.domain.dto.response.MemberResponseDTO" alias="MemberResponseDTO"/>
 
     </typeAliases>
 </configuration>

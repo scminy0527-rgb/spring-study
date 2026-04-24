@@ -23,7 +23,10 @@ public class JwtTokenUtil {
 
 //        토큰 만료시간 정해야함
 //        평균 1~5분 정도 (수업 테스트 에서는 24시간)
-        long expirationTimeInMills = 1000 * 60 * 60 * 24;
+//        long expirationTimeInMills = 1000 * 60 * 60 * 24;
+//        단위: 1 이면 밀리 세컨드
+//        따라서 1초 하고 싶으면 1000 으로 먼저 해야함
+        long expirationTimeInMills = 1000 * 60 * 10;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTimeInMills);
 
         claims.put("issuer", "a_class");

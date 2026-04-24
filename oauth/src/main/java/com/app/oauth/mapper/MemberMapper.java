@@ -10,7 +10,7 @@ public interface MemberMapper {
     public void insert(MemberVO memberVO);
 
 //    아이디로 멤버 가져오기
-    public MemberVO select(Long id);
+    public MemberDTO select(Long id);
 
 //    가입 여부 조회
     public boolean existMemberByMemberEmail(String memberEmail);

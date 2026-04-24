@@ -1,13 +1,16 @@
 package com.app.oauth.service;
 
+import com.app.oauth.domain.dto.response.ApiResponseDTO;
 import com.app.oauth.domain.dto.JwtTokenDTO;
 import com.app.oauth.domain.dto.MemberDTO;
+import com.app.oauth.domain.dto.response.MemberResponseDTO;
 import com.app.oauth.domain.vo.MemberVO;
 import com.app.oauth.domain.vo.SocialMemberVO;
 import com.app.oauth.exception.MemberException;
 import com.app.oauth.repository.MemberDAO;
 import com.app.oauth.repository.SocialMemberDAO;
 import com.app.oauth.util.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,8 +32,7 @@ public class MemberServiceImpl implements MemberService {
 
     //    회원 가입
     @Override
-    public Map<String, Object> join(MemberDTO memberDTO) {
-        Map<String, Object> result = new HashMap<>();
+    public ApiResponseDTO join(MemberDTO memberDTO) {
         Map<String, Object> claims = new HashMap<>();
 
 //        해당 이메일로 회원이 있니?
@@ -57,18 +59,21 @@ public class MemberServiceImpl implements MemberService {
 
         socialMemberDAO.save(socialMemberVO);
 
-        result.put("success", true);
-        result.put("message", "회원가입이 완료되었습니다.");
+//        result.put("success", true);
+//        result.put("message", "회원가입이 완료되었습니다.");
 
         claims.put("id", memberVO.getId());
         claims.put("memberEmail", memberVO.getMemberEmail());
         claims.put("memberProvider", socialMemberVO.getSocialMemberProvider());
 
-        result.put("claim", claims);
+        ApiResponseDTO result = ApiResponseDTO
+                .of(true, "회원가입이 완료되었습니다.", claims);
         return result;
     }
 
 //    일반 로그인
+//    여기서 ApiResponseDTO 로 내보내면 컨트롤러 에서는 토큰을 제거 한 뒤에 쿠키에 심어넣고
+//    나머지 것을 화면으로 전달
     @Override
     public JwtTokenDTO login(MemberDTO memberDTO) {
 //        사용자가 맞는지 검사 (이메일과 비밀번호, 프로바이더 local)
@@ -115,5 +120,24 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void socialLogin(MemberDTO memberDTO) {
 
+    }
+
+//    토큰으로 회원 정보를 조회하는 서비스
+    @Override
+    public ApiResponseDTO me(String token) {
+        Claims claims = jwtTokenUtil.parseToken(token);
+        Long id = Long.parseLong(claims.get("id").toString());
+        String memberEmail = claims.get("memberEmail").toString();
+        MemberResponseDTO foundMember = memberDAO.findById(id)
+                .map(MemberResponseDTO::from)
+                .orElseThrow(() -> {
+                    throw new MemberException("회원 조회 실패", HttpStatus.BAD_REQUEST);
+                });
+
+        ApiResponseDTO apiResponseDTO = ApiResponseDTO.of(
+                true, "회원 정보 조회 성공",  foundMember
+        );
+
+        return apiResponseDTO;
     }
 }

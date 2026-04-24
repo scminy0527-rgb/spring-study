@@ -1,6 +1,6 @@
 package com.app.oauth.controller;
 
-import com.app.oauth.domain.dto.ApiResponseDTO;
+import com.app.oauth.domain.dto.response.ApiResponseDTO;
 import com.app.oauth.exception.MemberException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

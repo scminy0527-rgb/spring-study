@@ -19,10 +19,9 @@ public class MemberDAO {
     }
 
 //    회원 찾기
-    public Optional<MemberVO> findById(Long id) {
+    public Optional<MemberDTO> findById(Long id) {
         return  Optional.ofNullable(memberMapper.select(id));
     }
-
 
 //    중복 여부
     public boolean existsByMemberEmail(String memberEmail) {
