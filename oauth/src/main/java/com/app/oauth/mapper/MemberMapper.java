@@ -12,15 +12,15 @@ public interface MemberMapper {
 //    아이디로 멤버 가져오기
     public MemberDTO select(Long id);
 
-//    가입 여부 조회
-    public boolean existMemberByMemberEmail(String memberEmail);
+//    가입 여부 조회 (이메일 + 소셜 프로바이더)
+    public boolean existsMemberByMemberEmailAndSocialMemberProvider(MemberDTO memberDTO);
 
-//    아이디 비밀번호로 조회
-    public MemberDTO selectByMemberEmail(String memberEmail);
+//    이메일 + 소셜 프로바이더로 조회
+    public MemberDTO selectByMemberEmailAndSocialMemberProvider(MemberDTO memberDTO);
 
 //    회원 수정
     public void update(MemberVO memberVO);
 
-//    회원 탈되
+//    회원 탈퇴
     public void delete(Long id);
 }

@@ -16,7 +16,7 @@ public interface MemberService {
     public JwtTokenDTO login(MemberDTO memberDTO);
 
 //    소셜 로그인
-    public void socialLogin(MemberDTO memberDTO);
+    public JwtTokenDTO socialLogin(MemberDTO memberDTO);
 
 //    마이 페이지 회원 수정
 //    회원 탈퇴

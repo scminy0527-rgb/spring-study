@@ -19,18 +19,18 @@ public class MemberDAO {
     }
 
 //    회원 찾기
-    public Optional<MemberDTO> findById(Long id) {
+    public Optional<MemberDTO> findMemberById(Long id) {
         return  Optional.ofNullable(memberMapper.select(id));
     }
 
-//    중복 여부
-    public boolean existsByMemberEmail(String memberEmail) {
-        return  memberMapper.existMemberByMemberEmail(memberEmail);
+//    중복 여부 (이메일 + 소셜 프로바이더)
+    public boolean existsByMemberEmailAndSocialMemberProvider(MemberDTO memberDTO) {
+        return memberMapper.existsMemberByMemberEmailAndSocialMemberProvider(memberDTO);
     }
 
-//    로그인
-    public Optional<MemberDTO> findByMemberEmail(String memberEmail) {
-        return Optional.ofNullable(memberMapper.selectByMemberEmail(memberEmail));
+//    이메일 + 소셜 프로바이더로 조회
+    public Optional<MemberDTO> findMemberByMemberEmailAndSocialMemberProvider(MemberDTO memberDTO) {
+        return Optional.ofNullable(memberMapper.selectByMemberEmailAndSocialMemberProvider(memberDTO));
     }
 
 //    회원 정보 수정

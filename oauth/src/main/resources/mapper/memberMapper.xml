@@ -27,45 +27,45 @@
     <!--    </insert>-->
     <insert id="insert" parameterType="MemberVO">
         INSERT INTO TBL_MEMBER
-        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
             SELECT SEQ_MEMBER.NEXTVAL FROM DUAL
         </selectKey>
-        VALUES (#{id}, #{memberEmail}, #{memberPassword}, #{memberPicture}, #{memberName}, #{memberNickname})
+        VALUES(#{id}, #{memberEmail}, #{memberPassword}, #{memberPicture}, #{memberName}, #{memberNickname})
     </insert>
 
     <select id="select" parameterType="Long" resultType="MemberDTO">
-        SELECT TBM.ID, TBM.MEMBER_EMAIL, TBM.MEMBER_PASSWORD, TBM.MEMBER_PICTURE, TBM.MEMBER_NAME, TBM.MEMBER_NICKNAME,
-               TBSM.MEMBER_ID, TBSM.SOCIAL_MEMBER_PROVIDER, TBSM.SOCIAL_MEMBER_PROVIDER_ID
+        SELECT
+            TBM.ID, TBM.MEMBER_EMAIL, TBM.MEMBER_PASSWORD, TBM.MEMBER_PICTURE, TBM.MEMBER_NAME, TBM.MEMBER_NICKNAME,
+            TBSM.MEMBER_ID, TBSM.SOCIAL_MEMBER_PROVIDER_ID, TBSM.SOCIAL_MEMBER_PROVIDER
         FROM TBL_MEMBER TBM
-         JOIN TBL_SOCIAL_MEMBER TBSM
-              ON TBM.ID = TBSM.MEMBER_ID
+                 JOIN TBL_SOCIAL_MEMBER TBSM
+                      ON TBM.ID = TBSM.MEMBER_ID
         WHERE TBM.ID = #{id}
     </select>
 
-<!--    <select id="selectByMemberEmail" parameterType="String" resultType="MemberVO">-->
-<!--        SELECT ID, MEMBER_EMAIL, MEMBER_PASSWORD, MEMBER_PICTURE, MEMBER_NAME, MEMBER_NICKNAME-->
-<!--        FROM TBL_MEMBER-->
-<!--        WHERE MEMBER_EMAIL = #{memberEmail}-->
-<!--    </select>-->
-
-    <select id="existMemberByMemberEmail" parameterType="String" resultType="_Boolean">
+    <select id="selectByMemberEmailAndSocialMemberProvider" parameterType="MemberDTO" resultType="MemberDTO">
         SELECT
-            CASE
-                WHEN COUNT(ID) > 0
-                THEN 1
-                ELSE 0
-            END
-        FROM TBL_MEMBER
-        WHERE MEMBER_EMAIL = #{memberEmail}
+            TBM.ID, TBM.MEMBER_EMAIL, TBM.MEMBER_PASSWORD, TBM.MEMBER_PICTURE, TBM.MEMBER_NAME, TBM.MEMBER_NICKNAME,
+            TBSM.MEMBER_ID, TBSM.SOCIAL_MEMBER_PROVIDER_ID, TBSM.SOCIAL_MEMBER_PROVIDER
+        FROM TBL_MEMBER TBM
+                 JOIN TBL_SOCIAL_MEMBER TBSM
+                      ON TBM.ID = TBSM.MEMBER_ID
+        WHERE TBM.MEMBER_EMAIL = #{memberEmail}
+          AND TBSM.SOCIAL_MEMBER_PROVIDER = #{socialMemberProvider}
     </select>
 
-    <select id="selectByMemberEmail" parameterType="String" resultType="MemberDTO">
-        SELECT TBM.ID, TBM.MEMBER_EMAIL, TBM.MEMBER_PASSWORD, TBM.MEMBER_PICTURE, TBM.MEMBER_NAME, TBM.MEMBER_NICKNAME,
-               TBSM.MEMBER_ID, TBSM.SOCIAL_MEMBER_PROVIDER, TBSM.SOCIAL_MEMBER_PROVIDER_ID
+    <select id="existsMemberByMemberEmailAndSocialMemberProvider" parameterType="MemberDTO" resultType="_boolean">
+        SELECT
+            CASE
+                WHEN COUNT(TBM.ID) > 0
+                    THEN 1
+                ELSE 0
+                END
         FROM TBL_MEMBER TBM
-        JOIN TBL_SOCIAL_MEMBER TBSM
-             ON TBM.ID = TBSM.MEMBER_ID
-        WHERE MEMBER_EMAIL = #{memberEmail}
+                 JOIN TBL_SOCIAL_MEMBER TBSM
+                      ON TBM.ID = TBSM.MEMBER_ID
+        WHERE TBM.MEMBER_EMAIL = #{memberEmail}
+          AND TBSM.SOCIAL_MEMBER_PROVIDER = #{socialMemberProvider}
     </select>
 
     <update id="update" parameterType="MemberVO">

@@ -38,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
 //        해당 이메일로 회원이 있니?
 //        응(true) 이미 있는 회원이야 그래서 중복된 이메일 이야
 //        아니(false) 회원이 아니야 그래서 이걸로 회원가입 가능 해 ^^
-        if(memberDAO.existsByMemberEmail(memberDTO.getMemberEmail())){
+        if(memberDAO.existsByMemberEmailAndSocialMemberProvider(memberDTO)){
             throw new MemberException("중복된 이메일 입니다.", HttpStatus.BAD_REQUEST);
         }
 
@@ -80,7 +80,7 @@ public class MemberServiceImpl implements MemberService {
 //        항상 예외를 먼저 던져야 함
 //        조건문 안에 들어가는거? 회원이야? 응(true) 회원이야. 아니(false) 회원이 아니야
 //        회원이 아닐 때에 회원이 아니라는 문구가 수행 되야 함
-        if(!memberDAO.existsByMemberEmail(memberDTO.getMemberEmail())){
+        if(!memberDAO.existsByMemberEmailAndSocialMemberProvider(memberDTO)){
             throw new MemberException("회원이 아닙니다.",  HttpStatus.BAD_REQUEST);
         }
 
@@ -88,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
 
 //        이미 이메일 검수 되었기에 문제 없음
         MemberDTO foundMember = memberDAO
-                .findByMemberEmail(memberVO.getMemberEmail())
+                .findMemberByMemberEmailAndSocialMemberProvider(memberDTO)
                 .orElseThrow(() -> {
                     throw new MemberException("에러", HttpStatus.BAD_REQUEST);
                 });
@@ -118,17 +118,46 @@ public class MemberServiceImpl implements MemberService {
 
 //    소셜 로그인
     @Override
-    public void socialLogin(MemberDTO memberDTO) {
+    public JwtTokenDTO socialLogin(MemberDTO memberDTO) {
+//            ---------서비스--------------------
+//            유저를 찾는다
+//            만약 유저가 있다면 로그인
+//            만약 유저가 없다면 회원가입 후 로그인
 
+        JwtTokenDTO jwtTokenDTO = new JwtTokenDTO();
+        Map<String, String> claims = new HashMap<>();
+
+        if(memberDAO.existsByMemberEmailAndSocialMemberProvider(memberDTO)){
+//            로그인 (토큰 발급)
+
+        } else {
+//            회원 가입
+            socialMemberDAO.save(SocialMemberVO.from(memberDTO));
+        }
+
+//        마지막에 만들어 져야 함
+        claims.put("id", memberDTO.getId() + "");
+        claims.put("memberEmail", memberDTO.getMemberEmail());
+        claims.put("socialMemberProvider", memberDTO.getSocialMemberProvider());
+
+        String accessToken = jwtTokenUtil.generateAccessToken(claims);
+        String refreshToken = jwtTokenUtil.generateRefreshToken(claims);
+        jwtTokenDTO.setAccessToken(accessToken);
+        jwtTokenDTO.setRefreshToken(refreshToken);
+
+        return jwtTokenDTO;
+//        토큰 반환
     }
 
 //    토큰으로 회원 정보를 조회하는 서비스
     @Override
     public ApiResponseDTO me(String token) {
+//        전달받은 토큰을 토대로 parse 해서 id 추출
         Claims claims = jwtTokenUtil.parseToken(token);
         Long id = Long.parseLong(claims.get("id").toString());
-        String memberEmail = claims.get("memberEmail").toString();
-        MemberResponseDTO foundMember = memberDAO.findById(id)
+
+//        id 를 이용해서 회원 정보를 가져오는 쿼리 실행
+        MemberResponseDTO foundMember = memberDAO.findMemberById(id)
                 .map(MemberResponseDTO::from)
                 .orElseThrow(() -> {
                     throw new MemberException("회원 조회 실패", HttpStatus.BAD_REQUEST);

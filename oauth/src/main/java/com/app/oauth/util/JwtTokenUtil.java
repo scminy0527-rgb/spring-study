@@ -1,8 +1,10 @@
 package com.app.oauth.util;
 
+import com.app.oauth.exception.JwtTokenException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -26,7 +28,8 @@ public class JwtTokenUtil {
 //        long expirationTimeInMills = 1000 * 60 * 60 * 24;
 //        단위: 1 이면 밀리 세컨드
 //        따라서 1초 하고 싶으면 1000 으로 먼저 해야함
-        long expirationTimeInMills = 1000 * 60 * 10;
+//        long expirationTimeInMills = 1000L * 60 * 60 * 24;
+        long expirationTimeInMills = 1000L * 10;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTimeInMills);
 
         claims.put("issuer", "a_class");
@@ -48,7 +51,8 @@ public class JwtTokenUtil {
 
 //        토큰 만료시간 정해야함
 //        평균 1주일 ~ 30일 정도
-        long expirationTimeInMills = 1000 * 60 * 60 * 24 * 30;
+        long expirationTimeInMills = 1000L * 60 * 60 * 24 * 30;
+//        long expirationTimeInMills = 1000L * 10;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTimeInMills);
 
         claims.put("issuer", "a_class");
@@ -69,13 +73,18 @@ public class JwtTokenUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException();
+//            해당 부분만 인증정보 만료 (이거 제외 하고는 전부 400번 대로 보내면 됨)
+//            해당 예외는 401번 에러
+            throw new JwtTokenException("토큰 만료", HttpStatus.UNAUTHORIZED);
         } catch (UnsupportedJwtException e) {
-            throw new RuntimeException();
+//            지원하지 않는 토큰
+            throw new JwtTokenException("지원하지 않는 토큰", HttpStatus.BAD_REQUEST);
         } catch (MalformedJwtException e) {
-            throw new RuntimeException();
+            throw new JwtTokenException("잘못된 토큰 형식", HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException();
+            throw new JwtTokenException("토큰이 비어있습니다.", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            throw new JwtTokenException("알 수 없는 오류 입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
