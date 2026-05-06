@@ -29,7 +29,7 @@ public class JwtTokenUtil {
 //        단위: 1 이면 밀리 세컨드
 //        따라서 1초 하고 싶으면 1000 으로 먼저 해야함
 //        long expirationTimeInMills = 1000L * 60 * 60 * 24;
-        long expirationTimeInMills = 1000L * 10;
+        long expirationTimeInMills = 1000L * 60 * 60 * 24;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTimeInMills);
 
         claims.put("issuer", "a_class");

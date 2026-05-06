@@ -69,12 +69,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
+            // 토큰이 있다면 토큰에서 이메일 및 인증 기관 꺼내기
             if(accessToken != null){
                 Claims claims = jwtTokenUtil.parseToken(accessToken);
                 memberEmail = (String)claims.get("memberEmail");
                 socialMemberProvider = (String)claims.get("socialMemberProvider");
             }
 
+            // 토큰에서 꺼낸 이메일 및 인증 기관이 실제로 null 값이 아닌 실제 값인지 보기
             if(memberEmail != null && socialMemberProvider != null){
                 MemberDTO memberDTO = new MemberDTO();
                 memberDTO.setMemberEmail(memberEmail);

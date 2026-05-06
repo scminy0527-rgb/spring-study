@@ -15,6 +15,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -33,12 +35,15 @@ public class SmsUtil {
 
     private DefaultMessageService messageService;
     private final JavaMailSender mailSender;
+    private final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     @PostConstruct
     private void init(){
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
     }
 
+//    해당 메서드는 특정 휴대폰 번호로 문자 메세지를 전송 하는 매서드
+//    매개변수: to (받는 사람) / content (메세지 내용)
     public SingleMessageSentResponse sendOneMemberPhone(String to, String content){
         Message message = new Message();
 
@@ -54,6 +59,13 @@ public class SmsUtil {
                 .sendOne(new SingleMessageSendingRequest(message));
         return response;
     }
+
+//    인증번호 생성
+    public String generateRandomCode() {
+        int code = SECURE_RANDOM.nextInt(1_000_000); // 0 ~ 999999
+        return String.format("%06d", code);           // 000000 ~ 999999
+    }
+
 
     // 이메일 전송
     public void sendMemberEmail(String to, String subject, String content){

@@ -33,21 +33,9 @@ public interface AuthService {
 //    인증 진행
     public boolean sendMemberPhoneVerificationCode(VerificationRequestDTO verificationRequestDTO);
 
+    public boolean verifyMemberPhoneVerificationCode(VerificationRequestDTO verificationRequestDTO);
 
-    public boolean verifyMemberPhoneVerificationCode(String phoneNumber);
+    public boolean sendMemberEmailVerificationCode(VerificationRequestDTO verificationRequestDTO);
 
-
-//    인증 번호 생성
-
-
-
-//    인증 번호 전송
-
-//    인증 번호 redis 에 보관
-
-//    인증 번호 매칭 여부 검증
-
-//    이메일 인증 번호
-
-
+    public boolean verifyMemberEmailVerificationCode(VerificationRequestDTO verificationRequestDTO);
 }

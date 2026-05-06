@@ -16,7 +16,7 @@ public class MemberVO {
 
     {
 //        초기화 블럭 (DEFAULT)
-        this.setMemberPicture("/default.jpg");
+        this.setMemberPicture("default.png");
         this.setMemberNickname("개복치 1단계");
     }
 

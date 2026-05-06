@@ -14,6 +14,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class MemberServiceImpl implements MemberService {
     private final SocialMemberDAO socialMemberDAO;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
+
+    @Value("${app.server-base-url:http://localhost:10000}")
+    private String serverBaseUrl;
 
     //    회원 가입
     @Override
@@ -105,6 +109,7 @@ public class MemberServiceImpl implements MemberService {
 
         claims.put("id", foundMember.getId() + "");
         claims.put("memberEmail", foundMember.getMemberEmail());
+        claims.put("socialMemberProvider", foundMember.getSocialMemberProvider());
 
         String jwtKey = jwtTokenUtil.generateAccessToken(claims);
         String jwtRefKey = jwtTokenUtil.generateRefreshToken(claims);
@@ -163,10 +168,25 @@ public class MemberServiceImpl implements MemberService {
                     throw new MemberException("회원 조회 실패", HttpStatus.BAD_REQUEST);
                 });
 
+        // 상대 경로로 저장된 picture → 백엔드 파일 엔드포인트 URL로 변환
+        // http(S3 풀 URL 등 기존 값)은 그대로 유지
+        String pic = foundMember.getMemberPicture();
+        if (pic != null && !pic.startsWith("http")) {
+            foundMember.setMemberPicture(serverBaseUrl + "/api/files/" + pic);
+        }
+
         ApiResponseDTO apiResponseDTO = ApiResponseDTO.of(
-                true, "회원 정보 조회 성공",  foundMember
+                true, "회원 정보 조회 성공", foundMember
         );
 
         return apiResponseDTO;
+    }
+
+    @Override
+    public ApiResponseDTO updatePicture(MemberVO memberVO) {
+        Map<String, Object> data = new HashMap<>();
+        memberDAO.updatePicture(memberVO);
+        data.put("updatedMemberPictureUrl", memberVO.getMemberPicture());
+        return ApiResponseDTO.of(true, "프로필 이미지 변경 완료", data);
     }
 }

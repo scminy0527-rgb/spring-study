@@ -39,6 +39,9 @@ public class ApiResponseDTO<T> {
         return new ApiResponseDTO<>(message, data);
     }
 
+//    fm 대로 하려면 아래와 같이 2개 (상태, 메세지)
+//    혹은 상태, 메세지, 데이터 3개
+//    이렇게 가는게 더 올바름
     public static <T>ApiResponseDTO<T> of(boolean success, String message, T data){
         return new ApiResponseDTO<>(success, message, data);
     }

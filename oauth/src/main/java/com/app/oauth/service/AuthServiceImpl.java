@@ -104,6 +104,8 @@ public class AuthServiceImpl implements AuthService {
         if(memberDAO.existsByMemberEmailAndSocialMemberProvider(memberDTO)){
             // 만약 유저가 있다면 -> 토큰 발급(id)
             // 조회
+
+            // 여기서 만약 기존에 전통 회원가입 됬지만 소셜 연동 이라면 이거에 대해서도 해줘야 함
             MemberDTO foundMember = memberDAO
                     .findMemberByMemberEmailAndSocialMemberProvider(memberDTO)
                     .orElseThrow(() -> { throw new MemberException("socialLogin 회원 조회 실패", HttpStatus.BAD_REQUEST);});
@@ -269,9 +271,6 @@ public class AuthServiceImpl implements AuthService {
 //        인증번호 생성 (이상 무)
         String verifyCode = AuthCodeGenerator.generateByRange();
 
-//        테스트: 인증번호 잘 나오는지 확인
-        log.info("인증번호: {}", verifyCode);
-
 //        redis 에 verifyCode:휴대폰 번호 형태로 체이닝 해서 넣기
         String key = "verifyCode:" + phoneNumber;
 //        레디스에 값 넣기
@@ -280,6 +279,7 @@ public class AuthServiceImpl implements AuthService {
         redisTemplate.expire(key, 3, TimeUnit.MINUTES);
 
 //        해당 휴대폰 번호에 문자 전송
+//        전송 성공하면 true, 실패 하면 false 반환
         try {
             smsUtil.sendOneMemberPhone(phoneNumber, verifyCode);
             return true;
@@ -289,15 +289,68 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean verifyMemberPhoneVerificationCode(String phoneNumber) {
+    public boolean verifyMemberPhoneVerificationCode(VerificationRequestDTO verificationRequestDTO) {
+        String phoneNumber = verificationRequestDTO.getMemberPhone();
+        String code = verificationRequestDTO.getCode();
+        String key = "verifyCode:" + phoneNumber;
 
-
-        return false;
-
+        try {
+            Boolean isMatch = redisTemplate.opsForSet().isMember(key, code);
+            if (Boolean.TRUE.equals(isMatch)) {
+                redisTemplate.delete(key);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
+//    사용자에게 이메일 인증번호를 제공하는 매서드
+    @Override
+    public boolean sendMemberEmailVerificationCode(VerificationRequestDTO verificationRequestDTO) {
+        String email = verificationRequestDTO.getMemberEmail();
 
+//        랜덤 6자리 코드 생성 후 레디스 저장 및 유저에게 전송
+//        String verifyCode = AuthCodeGenerator.generateByRange();
+        String verifyCode = smsUtil.generateRandomCode();
+        String key = "verifyCode:email:" + email;
+        redisTemplate.opsForValue().set(key, verifyCode, 3, TimeUnit.MINUTES);
 
+        String subject = "[EUM/이음 말하지 않아도 되는 언어] 이메일 인증번호";
+        String content = "인증번호: " + verifyCode +
+                "\n\n3분 내에 입력해주세요." +
+                "\n\n 본 메일은 발신전용 이메일 입니다.\n\n" +
+                "토막 개그: 반성문을 영어로 하면??\n\n" +
+                "글로벌";
+
+        try {
+            smsUtil.sendMemberEmail(email, subject, content);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+//    프론트 에서 사용자가 입력 한 이메일 인증번호 검증
+    @Override
+    public boolean verifyMemberEmailVerificationCode(VerificationRequestDTO verificationRequestDTO) {
+        String email = verificationRequestDTO.getMemberEmail();
+        String code = verificationRequestDTO.getCode();
+        String key = "verifyCode:email:" + email;
+
+        try {
+            Object storedCode = redisTemplate.opsForValue().get(key);
+            if (storedCode == null || !code.equals(storedCode.toString())) {
+                return false;
+            }
+//            인증 성공 하면 더이상 필요 없기에 레디스 에서 키 지움
+            redisTemplate.delete(key);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
 
 

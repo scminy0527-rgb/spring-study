@@ -41,6 +41,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     implementation 'net.nurigo:sdk:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1'
 }
 
 tasks.named('test') {

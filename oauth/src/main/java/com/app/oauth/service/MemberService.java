@@ -3,6 +3,7 @@ package com.app.oauth.service;
 import com.app.oauth.domain.dto.response.ApiResponseDTO;
 import com.app.oauth.domain.dto.JwtTokenDTO;
 import com.app.oauth.domain.dto.MemberDTO;
+import com.app.oauth.domain.vo.MemberVO;
 
 public interface MemberService {
 //    회원 가입
@@ -19,6 +20,10 @@ public interface MemberService {
     public JwtTokenDTO socialLogin(MemberDTO memberDTO);
 
 //    마이 페이지 회원 수정
+
+//    회원 썸네일 수정
+    public ApiResponseDTO updatePicture(MemberVO memberVO);
+
 //    회원 탈퇴
 
 //    토큰으로 회원 정보 조회하는 서비스

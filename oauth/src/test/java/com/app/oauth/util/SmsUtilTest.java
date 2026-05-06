@@ -32,6 +32,6 @@ public class SmsUtilTest {
         VerificationRequestDTO verificationRequestDTO = new VerificationRequestDTO();
         verificationRequestDTO.setMemberEmail("cjfals1015@naver.com");
 
-        smsUtil.sendMemberEmail("cjfals1015@naver.com", "ㅋㅋㅋㅋ", "테스트");
+        authService.sendMemberEmailVerificationCode(verificationRequestDTO);
     }
 }

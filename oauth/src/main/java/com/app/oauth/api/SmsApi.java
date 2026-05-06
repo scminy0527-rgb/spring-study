@@ -4,6 +4,7 @@ import com.app.oauth.domain.dto.request.VerificationRequestDTO;
 import com.app.oauth.domain.dto.response.ApiResponseDTO;
 import com.app.oauth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/sms")
 @RequiredArgsConstructor
+@Slf4j
 public class SmsApi {
 
     private final AuthService authService;
@@ -23,7 +25,6 @@ public class SmsApi {
     public ResponseEntity<ApiResponseDTO> sendMemberPhoneVerificationCode(
             @RequestBody VerificationRequestDTO verificationRequestDTO
     ){
-        String memberPhone = verificationRequestDTO.getMemberPhone();
         ApiResponseDTO apiResponseDTO = null;
         if(authService.sendMemberPhoneVerificationCode(verificationRequestDTO)){
             apiResponseDTO = ApiResponseDTO.of(true, "메세지가 발송되었습니다.");
@@ -38,17 +39,12 @@ public class SmsApi {
     public ResponseEntity<ApiResponseDTO> verifyMemberPhoneVerificationCode(
             @RequestBody VerificationRequestDTO verificationRequestDTO
     ){
-        String memberPhone = verificationRequestDTO.getMemberPhone();
-        String code = verificationRequestDTO.getCode();
-        ApiResponseDTO apiResponseDTO = null;
-        if(authService.verifyMemberPhoneVerificationCode("")){
+        ApiResponseDTO apiResponseDTO;
+        if(authService.verifyMemberPhoneVerificationCode(verificationRequestDTO)){
             apiResponseDTO = ApiResponseDTO.of(true, "인증이 완료되었습니다.");
         }else{
             apiResponseDTO = ApiResponseDTO.of(false, "인증번호를 확인해주세요.");
         }
-
-        apiResponseDTO = ApiResponseDTO.of(false, "인증번호를 확인해주세요.");
-
         return ResponseEntity.status(HttpStatus.OK).body(apiResponseDTO);
     }
 
@@ -57,15 +53,31 @@ public class SmsApi {
     public ResponseEntity<ApiResponseDTO> sendMemberEmailVerificationCode(
             @RequestBody VerificationRequestDTO verificationRequestDTO
     ) {
-        String memberEmail = verificationRequestDTO.getMemberEmail();
+//        log.info("프론트에서 요청 받음");
+//        log.info("프론트에서 요청 받은 이메일 주소: {}", verificationRequestDTO.getMemberEmail());
+        ApiResponseDTO apiResponseDTO;
+        if (authService.sendMemberEmailVerificationCode(verificationRequestDTO)) {
+            apiResponseDTO = ApiResponseDTO.of(true, "이메일이 발송되었습니다.");
+        } else {
+            apiResponseDTO = ApiResponseDTO.of(false, "이메일 전송에 실패했습니다. 이메일 주소를 확인해주세요.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponseDTO);
+    }
 
-
-
-//        이메일 전송 요청하는 코드
-
-//        이때 try catch 를 이용해서 이메일 전송 여부 확인
-
-        return  ResponseEntity.status(HttpStatus.OK).body(null);
+    // 이메일 인증코드 검증
+    @PostMapping("/email/verification-code/verify")
+    public ResponseEntity<ApiResponseDTO> verifyMemberEmailVerificationCode(
+            @RequestBody VerificationRequestDTO verificationRequestDTO
+    ) {
+        log.info("프론트에서 인증 코드 입력 하였음: {}",  verificationRequestDTO.getCode());
+        log.info("대상 이메일: {}",  verificationRequestDTO.getMemberEmail());
+        ApiResponseDTO apiResponseDTO;
+        if (authService.verifyMemberEmailVerificationCode(verificationRequestDTO)) {
+            apiResponseDTO = ApiResponseDTO.of(true, "인증이 완료되었습니다.");
+        } else {
+            apiResponseDTO = ApiResponseDTO.of(false, "인증번호를 확인해주세요.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponseDTO);
     }
 
 
